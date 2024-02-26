@@ -6,6 +6,8 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\OrderController;
+use App\Http\Controllers\CartController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -40,7 +42,9 @@ Route::middleware('auth:api')->get ('/logout', [AuthController::class, 'logout']
     //Просмотр своего профиля
 Route::middleware('auth:api')->get ('/profile', [UserController::class, 'this']);
     //Добавление товара в корзину
-Route::middleware('auth:api')->post('/category/product{id}', [ProductController::class, 'addToCart']);
+Route::middleware('auth:api')->post('/category/product{id}', [CartController::class, 'addToCart']);
+    //Оформление заказа
+Route::middleware('auth:api')->post('/checkout', [OrderController::class, 'checkout']);
 
 
 

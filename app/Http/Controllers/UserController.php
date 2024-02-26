@@ -33,16 +33,6 @@ class UserController extends Controller
             'data' => $user
         ]);
     }
-
-
-
-
-
-
-
-
-
-
     public function show(int $id) {
         $user = User::find($id);
         if(!$user) throw new ApiException(404, 'User not found');
@@ -50,4 +40,5 @@ class UserController extends Controller
             'data' => $user,
         ]);
     }
+
 }
