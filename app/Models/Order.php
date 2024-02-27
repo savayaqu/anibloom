@@ -31,4 +31,10 @@ class Order extends Model
     {
         return $this->belongsToMany(Product::class)->withPivot('quantity');
     }
+
+    // Определение связи с моделью Compound
+    public function compound()
+    {
+        return $this->hasMany(Compound::class);
+    }
 }

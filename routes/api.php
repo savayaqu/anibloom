@@ -8,6 +8,7 @@ use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\CartController;
+use App\Http\Controllers\ReviewController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -43,8 +44,22 @@ Route::middleware('auth:api')->get ('/logout', [AuthController::class, 'logout']
 Route::middleware('auth:api')->get ('/profile', [UserController::class, 'this']);
     //Добавление товара в корзину
 Route::middleware('auth:api')->post('/category/product{id}', [CartController::class, 'addToCart']);
+    //Просмотр своей корзины
+Route::middleware('auth:api')->get('/cart', [CartController::class, 'index']);
     //Оформление заказа
 Route::middleware('auth:api')->post('/checkout', [OrderController::class, 'checkout']);
+    //Оставление отзыва для определнного товара
+Route::middleware('auth:api')->post('/category/product{id}/review', [ReviewController::class, 'store']);
+    //Редактирование корзины
+Route::middleware('auth:api')->patch('/cart', [CartController::class, 'update']);
+    //Редактирование отзыва
+Route::middleware('auth:api')->patch('/category/product{id}/review', [ReviewController::class, 'update']);
+    //Редактирование своего профиля
+Route::middleware('auth:api')->patch('/profile', [UserController::class, 'updateProfile']);
+    //Удаление отзыва
+Route::middleware('auth:api')->delete('/category/product{id}/review', [ReviewController::class, 'delete']);
+
+
 
 
 
