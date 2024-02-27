@@ -9,6 +9,7 @@ use App\Http\Controllers\ProductController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\ReviewController;
+use App\Http\Controllers\AdminController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -59,6 +60,11 @@ Route::middleware('auth:api')->patch('/profile', [UserController::class, 'update
     //Удаление отзыва
 Route::middleware('auth:api')->delete('/category/product{id}/review', [ReviewController::class, 'delete']);
 
+
+
+//Функционал администратора
+    //Создание категории
+Route::middleware('auth:api' , 'role:admin')->post('/admin/category/create', [AdminController::class, 'createCategory']);
 
 
 

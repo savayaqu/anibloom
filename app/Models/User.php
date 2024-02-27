@@ -36,7 +36,7 @@ class User extends Authenticatable
         return $this->hasMany(Cart::class);
     }
     public function hasRole(array $role) {
-        return in_array($this->role->id, $role);
+        return in_array($this->role->code, $role);
     }
 
 
