@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\ReviewCreateRequest;
+use App\Http\Requests\ReviewUpdateRequest;
 use App\Models\Compound;
 use App\Models\Order;
 use App\Models\Review;
@@ -9,7 +11,7 @@ use Illuminate\Http\Request;
 
 class ReviewController extends Controller
 {
-    public function store(Request $request, $productId)
+    public function store(ReviewCreateRequest $request, $productId)
     {
         // Получение текущего пользователя
         $user = auth()->user();
@@ -39,7 +41,7 @@ class ReviewController extends Controller
         return response()->json(['message' => 'Отзыв успешно сохранен'], 200);
     }
 
-    public  function update(Request $request, $productId)
+    public  function update(ReviewUpdateRequest $request, $productId)
     {
         // Получаем текущего пользователя
         $user = auth()->user();

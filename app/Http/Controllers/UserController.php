@@ -10,13 +10,6 @@ use Illuminate\Http\Request;
 
 class UserController extends Controller
 {
-    public function index() {
-        $users = User::all();
-        return response([
-            'data' => $users,
-        ]);
-    }
-
     public function create(UserCreateRequest $request) {
         $user = new User($request->all());
         $user->save();

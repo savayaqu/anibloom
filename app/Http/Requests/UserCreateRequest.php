@@ -23,13 +23,13 @@ class UserCreateRequest extends ApiRequest
     {
         return [
             'name'          => 'required|string|min:1|max:64',
-            'surname'       =>          'string|min:1|max:64',
+            'surname'       => 'required|string|min:1|max:64',
             'patronymic'    =>          'string|min:1|max:64',
             'login'         => 'required|string|min:1|max:64|unique:user',
             'password'      => 'required|string|min:1|max:64',
             'birth'         => 'required|date|date_format:Y-m-d|before_or_equal:2010-01-01',
-            'email'         => 'required|string|min:1|max:64',
-            'telephone'     => 'required|integer|digits_between:1,20',
+            'email'         => 'required|string|min:1|max:64|unique:user',
+            'telephone'     => 'required|integer|digits_between:1,20|unique:user',
         ];
     }
 }

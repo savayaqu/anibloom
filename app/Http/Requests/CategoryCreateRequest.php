@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class LoginRequest extends ApiRequest
+class CategoryCreateRequest extends ApiRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -21,11 +21,10 @@ class LoginRequest extends ApiRequest
      *
      * @return array<string, mixed>
      */
-    public function rules(): array
+    public function rules()
     {
         return [
-            'login'    => 'required|string|min:1|max:64',
-            'password' => 'required|string|min:1|max:64',
+            'name' => 'required|string|min:1|max:64'
         ];
     }
 }

@@ -20,8 +20,6 @@ use App\Http\Controllers\AdminController;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
-Route::get('/user', [UserController::class, 'index']);
-
 
 
 //Функционал пользователя
@@ -64,7 +62,22 @@ Route::middleware('auth:api')->delete('/category/product{id}/review', [ReviewCon
 
 //Функционал администратора
     //Создание категории
-Route::middleware('auth:api' , 'role:admin')->post('/admin/category/create', [AdminController::class, 'createCategory']);
+Route::middleware('auth:api' , 'role:2')->post('/admin/category/create', [AdminController::class, 'createCategory']);
+    //Добавление товара
+Route::middleware('auth:api' , 'role:2')->post('/admin/product/create', [AdminController::class, 'createProduct']);
+    //Просмотр всех пользователей
+Route::middleware('auth:api' , 'role:2')->get('/admin/users', [AdminController::class, 'allUsers']);
+    //Просмотр всех отзывов
+Route::middleware('auth:api' , 'role:2')->get('/admin/reviews', [AdminController::class, 'allReviews']);
+    //Просмотр всех заказов
+Route::middleware('auth:api' , 'role:2')->get('/admin/orders', [AdminController::class, 'allOrders']);
+    //Редактирование категории
+Route::middleware('auth:api' , 'role:2')->patch('/admin/category{id}/edit', [AdminController::class, 'updateCategory']);
+    //Редактирование товара
+Route::middleware('auth:api' , 'role:2')->patch('/admin/product{id}/edit', [AdminController::class, 'updateProduct']);
+    //Изменение статуса заказа
+    //редактирование отзыва
+
 
 
 
