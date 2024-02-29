@@ -8,13 +8,16 @@
     <title>Document</title>
 </head>
 <body>
-<form method="POST" action="/api/login">
-    @csrf
-    <input type="login" name="login" placeholder="login">
-    <input type="password" name="password" placeholder="Пароль">
-    <button type="submit">Войти</button>
-</form>
-<a href="http://anibloom/api/login">Авторизироваться</a>
-<a href="http://anibloom/api/categories">Просмотр категорий</a>
+<div style="display: flex; justify-content: space-around">
+    <img src="https://psv4.userapi.com/c237131/u310994933/docs/d21/6794f538e7ce/pizdec.gif?extra=uc9P9uR9V0F5jd7PRTN6EmHawD8TNolJK8v0l5vNi1gSdu1Yjatw6D9mjhQtkqI-yUK25zsLkCUqVqDNHbQULcMmbT8ueIJ1cTbiOHgFPfRp8T2KdYYDrbD4Edc59oO4KCXOoufrSwAqb_oJnPaIIwA">
+    <img src="https://psv4.userapi.com/c237131/u310994933/docs/d21/6794f538e7ce/pizdec.gif?extra=uc9P9uR9V0F5jd7PRTN6EmHawD8TNolJK8v0l5vNi1gSdu1Yjatw6D9mjhQtkqI-yUK25zsLkCUqVqDNHbQULcMmbT8ueIJ1cTbiOHgFPfRp8T2KdYYDrbD4Edc59oO4KCXOoufrSwAqb_oJnPaIIwA">
+</div>
+<div style="display: flex; justify-content: center">
+    <img src="https://psv4.userapi.com/c237131/u310994933/docs/d21/6794f538e7ce/pizdec.gif?extra=uc9P9uR9V0F5jd7PRTN6EmHawD8TNolJK8v0l5vNi1gSdu1Yjatw6D9mjhQtkqI-yUK25zsLkCUqVqDNHbQULcMmbT8ueIJ1cTbiOHgFPfRp8T2KdYYDrbD4Edc59oO4KCXOoufrSwAqb_oJnPaIIwA">
+</div>
+<div style="display: flex; justify-content: space-around">
+    <img src="https://psv4.userapi.com/c237131/u310994933/docs/d21/6794f538e7ce/pizdec.gif?extra=uc9P9uR9V0F5jd7PRTN6EmHawD8TNolJK8v0l5vNi1gSdu1Yjatw6D9mjhQtkqI-yUK25zsLkCUqVqDNHbQULcMmbT8ueIJ1cTbiOHgFPfRp8T2KdYYDrbD4Edc59oO4KCXOoufrSwAqb_oJnPaIIwA">
+    <img src="https://psv4.userapi.com/c237131/u310994933/docs/d21/6794f538e7ce/pizdec.gif?extra=uc9P9uR9V0F5jd7PRTN6EmHawD8TNolJK8v0l5vNi1gSdu1Yjatw6D9mjhQtkqI-yUK25zsLkCUqVqDNHbQULcMmbT8ueIJ1cTbiOHgFPfRp8T2KdYYDrbD4Edc59oO4KCXOoufrSwAqb_oJnPaIIwA">
+</div>
 </body>
 </html>

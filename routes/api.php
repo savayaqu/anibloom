@@ -22,7 +22,7 @@ use App\Http\Controllers\AdminController;
 */
 
 
-//Функционал пользователя
+
     //Регистрация
 Route::post('/register' , [UserController::class, 'create' ]);
     //Авторизация
