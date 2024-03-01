@@ -22,7 +22,6 @@ use App\Http\Controllers\AdminController;
 */
 
 
-
     //Регистрация
 Route::post('/register' , [UserController::class, 'create' ]);
     //Авторизация
@@ -30,7 +29,7 @@ Route::post('/login' , [AuthController::class, 'login' ]);
     //Просмотр категорий товаров
 Route::get('/categories' , [CategoryController::class, 'index']);
     //Просмотр товаров определенной категории
-Route::get('/category{id}' , [ProductController::class, 'showMany']);
+Route::get('/category/{id}' , [ProductController::class, 'showMany']);
     //Просмотр конкретного товара
 Route::get('/category/product{id}' , [ProductController::class, 'show']);
 

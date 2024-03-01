@@ -10,12 +10,15 @@ use Illuminate\Http\Request;
 class ProductController extends Controller
 {
     public function showMany(int $id) {
-        $product = Product::where('category_id', $id)->get();
-        if(!$product) throw new ApiException(404, 'Товары не найдены');
+        $products = Product::where('category_id', $id)->get();
+        if($products->isEmpty()) {
+            throw new ApiException(404, 'Товары не найдены');
+        }
         return response([
-           'data' => $product
+            'data' => $products
         ]);
     }
+
     public function show(int $id) {
         $product = Product::where('id', $id)->first();
         if(!$product) throw new ApiException(404, 'Товар не найден');
