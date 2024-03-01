@@ -31,7 +31,7 @@ Route::get('/categories' , [CategoryController::class, 'index']);
     //Просмотр товаров определенной категории
 Route::get('/category/{id}' , [ProductController::class, 'showMany']);
     //Просмотр конкретного товара
-Route::get('/category/product{id}' , [ProductController::class, 'show']);
+Route::get('/category/product/{id}' , [ProductController::class, 'show']);
 
 
 
@@ -41,21 +41,21 @@ Route::middleware('auth:api')->get ('/logout', [AuthController::class, 'logout']
     //Просмотр своего профиля
 Route::middleware('auth:api')->get ('/profile', [UserController::class, 'this']);
     //Добавление товара в корзину
-Route::middleware('auth:api')->post('/category/product{id}', [CartController::class, 'addToCart']);
+Route::middleware('auth:api')->post('/category/product/{id}', [CartController::class, 'addToCart']);
     //Просмотр своей корзины
 Route::middleware('auth:api')->get('/cart', [CartController::class, 'index']);
     //Оформление заказа
 Route::middleware('auth:api')->post('/checkout', [OrderController::class, 'checkout']);
     //Оставление отзыва для определнного товара
-Route::middleware('auth:api')->post('/category/product{id}/review', [ReviewController::class, 'store']);
+Route::middleware('auth:api')->post('/category/product/{id}/review', [ReviewController::class, 'store']);
     //Редактирование корзины
 Route::middleware('auth:api')->patch('/cart', [CartController::class, 'update']);
     //Редактирование отзыва
-Route::middleware('auth:api')->patch('/category/product{id}/review', [ReviewController::class, 'update']);
+Route::middleware('auth:api')->patch('/category/product/{id}/review', [ReviewController::class, 'update']);
     //Редактирование своего профиля
 Route::middleware('auth:api')->patch('/profile', [UserController::class, 'updateProfile']);
     //Удаление отзыва
-Route::middleware('auth:api')->delete('/category/product{id}/review', [ReviewController::class, 'delete']);
+Route::middleware('auth:api')->delete('/category/product/{id}/review', [ReviewController::class, 'delete']);
 
 
 
@@ -71,11 +71,22 @@ Route::middleware('auth:api' , 'role:2')->get('/admin/reviews', [AdminController
     //Просмотр всех заказов
 Route::middleware('auth:api' , 'role:2')->get('/admin/orders', [AdminController::class, 'allOrders']);
     //Редактирование категории
-Route::middleware('auth:api' , 'role:2')->patch('/admin/category{id}/edit', [AdminController::class, 'updateCategory']);
+Route::middleware('auth:api' , 'role:2')->patch('/admin/category/{id}/edit', [AdminController::class, 'updateCategory']);
     //Редактирование товара
-Route::middleware('auth:api' , 'role:2')->patch('/admin/product{id}/edit', [AdminController::class, 'updateProduct']);
+Route::middleware('auth:api' , 'role:2')->patch('/admin/product/{id}/edit', [AdminController::class, 'updateProduct']);
     //Изменение статуса заказа
-    //редактирование отзыва
+Route::middleware('auth:api' , 'role:2')->patch('/admin/order/{id}/edit', [AdminController::class, 'updateOrder']);
+    //Редактирование отзыва
+Route::middleware('auth:api' , 'role:2')->patch('/admin/review/{id}/edit', [AdminController::class, 'updateReview']);
+    //Удаление категории
+Route::middleware('auth:api' , 'role:2')->delete('/admin/category/{id}/delete', [AdminController::class, 'deleteCategory']);
+    //Удаление товара
+Route::middleware('auth:api' , 'role:2')->delete('/admin/product/{id}/delete', [AdminController::class, 'deleteProduct']);
+    //Удаление пользователя
+Route::middleware('auth:api' , 'role:2')->delete('/admin/user/{id}/delete', [AdminController::class, 'deleteUser']);
+    //Удаление отзыва
+Route::middleware('auth:api' , 'role:2')->delete('/admin/review/{id}/delete', [AdminController::class, 'deleteReview']);
+
 
 
 
