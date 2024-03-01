@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Знакомство с библиотекой vue 3</title>
+    <link rel="stylesheet" href="/public/css/bootstrap.css">
+    <link rel="stylesheet" href="/public/css/my.css">
+    <script defer src="/public/js/vue.3.4.21.global.js"></script>
+    <script defer src="/public/js/my.js"></script>
+
+</head>
+<body id="app">
+
+    <nav>
+        <ul class="nav">
+            <li class="p-4"><a @click="linkpage('main')" href="#">Главная</a></li>
+            <li class="p-4"><a @click="linkpage('auth')" href="#">Авторизация</a></li>
+            <li class="p-4"><a @click="linkpage('reg')" href="#">Региcтрация</a></li>
+            <li class="p-4"><a @click="linkpage('to-do')" href="#">Список дел</a></li>
+            <li class="p-4"><a @click="linkpage('component')" href="#">Компоненты</a></li>
+            <li class="p-4"><a @click="linkpage('posts')" href="#">Посты</a></li>
+            <li class="p-4"><a @click="theme" href="#">{{ theme_name }}</a></li>
+        </ul>
+    </nav>
+
+    <section class="p-2" v-if="page === 'main'">
+        <h2>Декларативная отрисовка</h2>
+        <p :title="title">{{ message }}</p>
+        <h2>Товары</h2>
+        <div v-for="category in categories" :key="category.id">
+            <div class="card-header">
+                <h3 style="text-align: center">{{ category.name }}</h3>
+            </div>
+            <div class="card-body" style="display: flex; flex-direction: row;">
+                <div v-for="product in category.products" :key="product.id"  style="width: 30%;">
+                    <div>
+                        <strong>{{ product.name }}</strong>
+                        <div>{{ product.description }}</div>
+                        <div>{{ product.price }}</div>
+                    </div>
+                </div>
+
+            </div>
+            <a :href="'http://anibloom/api/category/' + category.id">Просмотреть все</a>
+        </div>
+
+    </section>
+
+    <section class="p-2" v-if="page === 'auth'">
+        <h2>Авторизация</h2>
+        <form class="form-control">
+            <input class="form-control m-3 w-50" type="text" placeholder="Введи логин">
+            <input class="form-control m-3 w-50" type="password" placeholder="Введи пароль">
+            <button class="btn btn-dark m-3 w-50">Вход</button>
+        </form>
+    </section>
+
+    <section class="p-2" v-if="page === 'reg'">
+        <h2>Регистрация</h2>
+        <form class="form-control">
+            <input class="form-control m-3 w-50" type="text" placeholder="Введи ФИО">
+            <input class="form-control m-3 w-50" type="text" placeholder="Введи логин">
+            <input class="form-control m-3 w-50" type="password" placeholder="Введи пароль">
+            <button class="btn btn-dark m-3 w-50">Создать аккаунт</button>
+        </form>
+    </section>
+
+
+
+</body>
+</html>
