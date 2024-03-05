@@ -6,18 +6,30 @@ use Exception;
 
 class ApiException extends Exception
 {
-    public function __construct($code, $message, $errors = [])
+    protected $statusCode;
+    protected $data;
+
+    public function __construct($statusCode, $message = null, $errors = [])
     {
-        $data = [
+        $this->statusCode = $statusCode;
+        $this->data = [
             'success' => false,
-            'code' => $code,
+            'code' => $statusCode,
         ];
-        if (!empty($message)) {
-            $data['message'] = $message;
+
+        if ($message !== null) {
+            $this->data['message'] = $message;
         }
-        if (count($errors) > 0) {
-            $data['message'] = $errors;
+
+        if (!empty($errors)) {
+            $this->data['errors'] = $errors;
         }
-        parent::__construct( response()->json($data)->setStatusCode($code));
+
+        parent::__construct();
+    }
+
+    public function render($request)
+    {
+        return response()->json($this->data, $this->statusCode);
     }
 }

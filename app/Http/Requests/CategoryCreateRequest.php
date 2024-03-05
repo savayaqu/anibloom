@@ -24,7 +24,14 @@ class CategoryCreateRequest extends ApiRequest
     public function rules()
     {
         return [
-            'name' => 'required|string|min:1|max:64'
+            'name' => 'required|string|max:64'
+        ];
+    }
+    public function messages()
+    {
+        return [
+            'name.required' => 'Поле "Name" не может быть пустым.',
+            'name.max' => 'Поле "Name" не может содержать более :max символов.',
         ];
     }
 }

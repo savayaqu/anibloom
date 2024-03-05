@@ -24,8 +24,17 @@ class LoginRequest extends ApiRequest
     public function rules(): array
     {
         return [
-            'login'    => 'required|string|min:1|max:64',
-            'password' => 'required|string|min:1|max:64',
+            'login'    => 'required|string|max:64',
+            'password' => 'required|string|max:64',
+        ];
+    }
+    public function messages()
+    {
+        return [
+            'login.required' => 'Поле "Login" не может быть пустым.',
+            'login.max' => 'Поле "Login" не может содержать более :max символов.',
+            'password.required' => 'Поле "Password" не может быть пустым.',
+            'password.max' => 'Поле "Password" не может содержать более :max символов.',
         ];
     }
 }

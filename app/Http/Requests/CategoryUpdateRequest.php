@@ -24,7 +24,13 @@ class CategoryUpdateRequest extends ApiRequest
     public function rules()
     {
         return [
-            'name' => 'string|min:1|max:64'
+            'name' => 'string|max:64'
+        ];
+    }
+    public function messages()
+    {
+        return [
+            'name.max' => 'Поле "Name" не может содержать более :max символов.',
         ];
     }
 }

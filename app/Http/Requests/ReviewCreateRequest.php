@@ -25,7 +25,17 @@ class ReviewCreateRequest extends ApiRequest
     {
         return [
             'rating'     => 'required|integer|min:1|max:5',
-            'textReview' => 'required|string|min:1',
+            'textReview' => 'required|string',
+        ];
+    }
+    public function messages()
+    {
+        return [
+            'rating.required'       => 'Поле "Rating" обязательно для заполнения.',
+            'rating.integer'  => 'Поле "Rating" должно быть целым числом.',
+            'rating.min'      => 'Поле "Rating" должно быть не менее :min.',
+            'rating.max'      => 'Поле "Rating" должно быть не более :max.',
+            'textReview.required'       => 'Поле "TextReview" обязательно для заполнения.',
         ];
     }
 }

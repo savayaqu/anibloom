@@ -24,8 +24,19 @@ class OrderCreateRequest extends ApiRequest
     public function rules()
     {
         return [
-            'address'    => 'required|string|min:1|max:255',
-            'payment_id' => 'required|integer|min:1|max:3'
+            'address'    => 'required|string|max:255',
+            'payment_id' => 'required|integer|min:1|max:20'
+        ];
+    }
+    public function messages()
+    {
+        return [
+            'address.required'    => 'Поле "Address" обязательно для заполнения.',
+            'address.max'         => 'Поле "Address" должно содержать не более :max символов.',
+            'payment_id.required' => 'Поле "Payment ID" обязательно для заполнения.',
+            'payment_id.integer'  => 'Поле "Payment ID" должно быть целым числом.',
+            'payment_id.min'      => 'Поле "Payment ID" должно быть не менее :min.',
+            'payment_id.max'      => 'Поле "Payment ID" должно быть не более :max.',
         ];
     }
 }

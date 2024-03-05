@@ -24,9 +24,21 @@ class OrderUpdateRequest extends FormRequest
     public function rules()
     {
         return [
-            'address'    => 'string|min:1|max:255',
-            'payment_id' => 'integer|min:1|max:3',
+            'address'    => 'string|max:255',
+            'payment_id' => 'integer|min:1|max:20',
             'status_id' => 'integer|min:1|max:3',
+        ];
+    }
+    public function messages()
+    {
+        return [
+            'address.max'         => 'Поле "Address" должно содержать не более :max символов.',
+            'payment_id.integer'  => 'Поле "Payment ID" должно быть целым числом.',
+            'payment_id.min'      => 'Поле "Payment ID" должно быть не менее :min.',
+            'payment_id.max'      => 'Поле "Payment ID" должно быть не более :max.',
+            'status_id.integer'   => 'Поле "Status ID" должно быть целым числом.',
+            'status_id.min'       => 'Поле "Status ID" должно быть не менее :min.',
+            'status_id.max'       => 'Поле "Status ID" должно быть не более :max.',
         ];
     }
 }

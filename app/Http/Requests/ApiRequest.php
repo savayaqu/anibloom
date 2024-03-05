@@ -8,13 +8,13 @@ use Illuminate\Contracts\Validation\Validator;
 
 class ApiRequest extends FormRequest
 {
-    public function failedAuthorization()
-    {
-        throw new ApiException(401, 'Validation error');
-    }
-
     public function failedValidation(Validator $validator)
     {
-        throw new ApiException(422, 'Validation error', $validator->errors());
+        throw new ApiException(422, '', $validator->errors());
     }
+    public function failedAuthorization()
+    {
+        return throw new ApiException(403, 'Login failed');
+    }
+
 }

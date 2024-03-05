@@ -25,7 +25,15 @@ class ReviewUpdateRequest extends ApiRequest
     {
         return [
             'rating'     => 'integer|min:1|max:5',
-            'textReview' => 'string|min:1',
+            'textReview' => 'string',
+        ];
+    }
+    public function messages()
+    {
+        return [
+            'rating.integer'  => 'Поле "Rating" должно быть целым числом.',
+            'rating.min'      => 'Поле "Rating" должно быть не менее :min.',
+            'rating.max'      => 'Поле "Rating" должно быть не более :max.',
         ];
     }
 }
