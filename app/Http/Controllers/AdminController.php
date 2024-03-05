@@ -14,6 +14,7 @@ use App\Models\Product;
 use App\Models\Review;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class AdminController extends Controller
 {
@@ -36,21 +37,45 @@ class AdminController extends Controller
         // Возвращаем успешный ответ
         return response()->json(['message' => 'Категория успешно создана'], 201);
     }
-    public function createProduct(ProductCreateRequest $request) {
-        // Создаем новый продукт
-        $product = new Product([
-            'name' => $request->input('name'),
-            'description' => $request->input('description'),
-            'price' => $request->input('price'),
-            'quantity' => $request->input('quantity'),
-            'photo' => $request->input('photo'),
-            'category_id' => $request->input('name'),
-        ]);
-        //сохраняем в БД
-        $product->save();
-        // Возвращаем успешный ответ
-        return response()->json(['message' => 'Продукт успешно создан'], 201);
+
+    public function createProduct(ProductCreateRequest $request)
+    {
+        // Проверяем, есть ли продукт с таким именем уже в базе данных
+        $existingProduct = Product::where('name', $request->input('name'))->first();
+        if ($existingProduct) {
+            return response()->json(['error' => 'Продукт с таким именем уже существует'], 422);
+        }
+
+        // Проверяем, загружен ли файл
+        if ($request->hasFile('photo')) {
+            // Получаем файл из запроса
+            $file = $request->file('photo');
+            // Определяем путь для сохранения файла
+            $filePath = 'uploads/' . $request->input('category_id');
+            //переименовываем файл
+            $fileName = $request->input('name') . '.' . $file->getClientOriginalExtension(); // Получение расширения оригинального файла
+            // Сохраняем файл на сервере
+            $filePathToPlace = $file->storeAs($filePath, $fileName);
+
+            // Проверяем успешность сохранения файла
+            if ($fileName) {
+                // Файл успешно сохранен, продолжаем сохранение продукта с указанием имени файла
+                $product = new Product($request->all());
+                $product->photo = $filePathToPlace; // Сохраняем путь до файла
+                $product->save();
+
+                return response()->json(['message' => 'Product created successfully'], 201);
+            } else {
+                // Если возникла ошибка при сохранении файла
+                return response()->json(['error' => 'Failed to save file'], 500);
+            }
+        } else {
+            // Если файл не был загружен
+            $product = new Product($request->all());
+            $product->save();
+            return response()->json(['message' => 'Product created successfully'], 201);}
     }
+
     public function allUsers()
     {
         $users = User::where('role_id', 1)->get();
@@ -91,14 +116,33 @@ class AdminController extends Controller
         if (!$product) {
             return response()->json(['error' => 'Товар не найден'], 404);
         }
-        // Заполнение модели данными из запроса
-        $product->fill($request->only(['name', 'description', 'price', 'quantity', 'photo']));
+        // Обновление изображения товара, если новое изображение предоставлено
+        // Проверяем, загружен ли файл
+        if ($request->hasFile('photo')) {
+            // Получаем файл из запроса
+            $file = $request->file('photo');
+            // Определяем путь для сохранения файла
+            //Получаем текущую категорию или новую
+            // Определяем путь для сохранения файла
+            $category_id = $request->input('category_id') ? $request->input('category_id') : $product->category_id;
 
+            $filePath = 'uploads/' . $category_id;
+            //переименовываем файл
+            $fileName = $request->input('name') . '.' . $file->getClientOriginalExtension(); // Получение расширения оригинального файла
+            //удаление файла на сервере
+            Storage::delete($product->photo);
+            // Сохраняем файл на сервере
+            $filePathToPlace = $file->storeAs($filePath, $fileName);
+            $product->photo = $filePathToPlace; // Сохраняем путь до файла
+        }
+        // Сохранение остальных данных товара
+        $product->fill($request->except('photo')); // Обновляем все остальные поля товара, кроме изображения
         // Сохранение изменений
         $product->save();
         return response()->json(['message' => 'Товар успешно обновлен'], 200);
-
     }
+
+
 
     public function updateOrder(OrderUpdateRequest $request, $id)
     {

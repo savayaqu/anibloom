@@ -73,7 +73,7 @@ Route::middleware('auth:api' , 'role:2')->get('/admin/orders', [AdminController:
     //Редактирование категории
 Route::middleware('auth:api' , 'role:2')->patch('/admin/category/{id}/edit', [AdminController::class, 'updateCategory']);
     //Редактирование товара
-Route::middleware('auth:api' , 'role:2')->patch('/admin/product/{id}/edit', [AdminController::class, 'updateProduct']);
+Route::middleware('auth:api' , 'role:2')->post('/admin/product/{id}/edit', [AdminController::class, 'updateProduct']);
     //Изменение статуса заказа
 Route::middleware('auth:api' , 'role:2')->patch('/admin/order/{id}/edit', [AdminController::class, 'updateOrder']);
     //Редактирование отзыва

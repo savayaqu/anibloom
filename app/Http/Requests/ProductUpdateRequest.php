@@ -25,10 +25,10 @@ class ProductUpdateRequest extends ApiRequest
     {
         return [
             'name'        => 'string|min:1|max:64',
-            'description' => 'string|min:1',
+            'description' => 'nullable|string',
             'price'        => ['numeric', 'min:0', 'regex:/^\d{1,8}(\.\d{1,2})?$/'], // Формат decimal(10,2)
             'quantity'    => 'integer|min:1',
-            'photo'       => '',
+            'photo'       => 'nullable|file|mimes:jpeg,jpg,png|max:4096', //до 4мб
             'category_id' => 'integer|min:1',
         ];
     }

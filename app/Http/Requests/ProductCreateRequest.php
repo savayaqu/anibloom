@@ -25,10 +25,10 @@ class ProductCreateRequest extends ApiRequest
     {
         return [
             'name'        => 'required|string|min:1|max:64',
-            'description' => 'required|string|min:1',
+            'description' => 'nullable|string',
             'price'        => ['required', 'numeric', 'min:0', 'regex:/^\d{1,8}(\.\d{1,2})?$/'], // Формат decimal(10,2)
             'quantity'    => 'required|integer|min:1',
-            'photo'       => '',
+            'photo'       => 'nullable|file|mimes:jpeg,jpg,png|max:4096', //до 4мб
             'category_id' => 'required|integer|min:1',
         ];
     }
