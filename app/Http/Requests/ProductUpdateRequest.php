@@ -28,7 +28,7 @@ class ProductUpdateRequest extends ApiRequest
             'description' => 'nullable|string',
             'price'        => ['numeric', 'min:0', 'regex:/^\d{1,8}(\.\d{1,2})?$/'], // Формат decimal(10,2)
             'quantity'    => 'integer|min:1',
-            'photo'       => 'nullable|file|mimes:jpeg,jpg,png|max:4096', //до 4мб
+            'photo'       => 'nullable|file|mimes:jpeg,jpg,png,webp|max:4096', //до 4мб
             'category_id' => 'integer|min:1',
         ];
     }

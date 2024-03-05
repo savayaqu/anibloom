@@ -46,21 +46,29 @@ class AdminController extends Controller
             return response()->json(['error' => 'Продукт с таким именем уже существует'], 422);
         }
 
+        // Создаем новый продукт
+        $product = new Product($request->all());
+
+        // Сохраняем продукт в базе данных
+        $product->save();
+
+        // Получаем ID только что созданного продукта
+        $productId = $product->id;
+
         // Проверяем, загружен ли файл
         if ($request->hasFile('photo')) {
             // Получаем файл из запроса
             $file = $request->file('photo');
             // Определяем путь для сохранения файла
             $filePath = 'uploads/' . $request->input('category_id');
-            //переименовываем файл
-            $fileName = $request->input('name') . '.' . $file->getClientOriginalExtension(); // Получение расширения оригинального файла
+            // Переименовываем файл
+            $fileName = $productId . '.' . $file->getClientOriginalExtension(); // Получение расширения оригинального файла
             // Сохраняем файл на сервере
             $filePathToPlace = $file->storeAs($filePath, $fileName);
 
             // Проверяем успешность сохранения файла
             if ($fileName) {
                 // Файл успешно сохранен, продолжаем сохранение продукта с указанием имени файла
-                $product = new Product($request->all());
                 $product->photo = $filePathToPlace; // Сохраняем путь до файла
                 $product->save();
 
@@ -70,11 +78,11 @@ class AdminController extends Controller
                 return response()->json(['error' => 'Failed to save file'], 500);
             }
         } else {
-            // Если файл не был загружен
-            $product = new Product($request->all());
-            $product->save();
-            return response()->json(['message' => 'Product created successfully'], 201);}
+            // Если файл не был загружен, просто возвращаем ответ об успешном создании продукта
+            return response()->json(['message' => 'Product created successfully'], 201);
+        }
     }
+
 
     public function allUsers()
     {
@@ -121,14 +129,12 @@ class AdminController extends Controller
         if ($request->hasFile('photo')) {
             // Получаем файл из запроса
             $file = $request->file('photo');
-            // Определяем путь для сохранения файла
-            //Получаем текущую категорию или новую
-            // Определяем путь для сохранения файла
+            // Получаем текущую категорию или новую
             $category_id = $request->input('category_id') ? $request->input('category_id') : $product->category_id;
-
+            // Определяем путь для сохранения файла
             $filePath = 'uploads/' . $category_id;
             //переименовываем файл
-            $fileName = $request->input('name') . '.' . $file->getClientOriginalExtension(); // Получение расширения оригинального файла
+            $fileName = $product->id . '.' . $file->getClientOriginalExtension(); // Получение расширения оригинального файла
             //удаление файла на сервере
             Storage::delete($product->photo);
             // Сохраняем файл на сервере
