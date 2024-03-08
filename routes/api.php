@@ -41,13 +41,13 @@ Route::middleware('auth:api')->get ('/logout', [AuthController::class, 'logout']
     //Просмотр своего профиля
 Route::middleware('auth:api')->get ('/profile', [UserController::class, 'this']);
     //Добавление товара в корзину
-Route::middleware('auth:api')->post('/category/product/{id}', [CartController::class, 'addToCart']);
+Route::middleware('auth:api')->post('/product/{id}', [CartController::class, 'addToCart']);
     //Просмотр своей корзины
 Route::middleware('auth:api')->get('/cart', [CartController::class, 'index']);
     //Оформление заказа
 Route::middleware('auth:api')->post('/checkout', [OrderController::class, 'checkout']);
     //Оставление отзыва для определнного товара
-Route::middleware('auth:api')->post('/category/product/{id}/review', [ReviewController::class, 'store']);
+Route::middleware('auth:api')->post('/product/{id}/review', [ReviewController::class, 'store']);
     //Редактирование корзины
 Route::middleware('auth:api')->patch('/cart', [CartController::class, 'update']);
     //Редактирование отзыва

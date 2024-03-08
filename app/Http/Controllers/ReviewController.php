@@ -28,7 +28,17 @@ class ReviewController extends Controller
             return response()->json(['error' => 'Вы не можете оставить отзыв на товар, который вы не покупали'], 403);
         }
 
-        // Если всё-таки купил, то оставляем отзыв
+        // Проверяем, оставлял ли пользователь уже отзыв на данный товар
+        $existingReview = Review::where('user_id', $user->id)
+            ->where('product_id', $productId)
+            ->exists();
+
+        // Если пользователь уже оставлял отзыв, возвращаем сообщение об ошибке
+        if ($existingReview) {
+            return response()->json(['error' => 'Вы уже оставили отзыв на этот товар'], 403);
+        }
+
+        // Сохранение нового отзыва
         $review = new Review([
             'rating' => $request->input('rating'),
             'textReview' => $request->input('textReview'),
