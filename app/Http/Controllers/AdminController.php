@@ -124,6 +124,11 @@ class AdminController extends Controller
         if (!$product) {
             return response()->json(['error' => 'Товар не найден'], 404);
         }
+        // Проверяем, есть ли продукт с таким именем уже в базе данных
+        $existingProduct = Product::where('name', $request->input('name'))->first();
+        if ($existingProduct) {
+            return response()->json(['error' => 'Продукт с таким именем уже существует'], 422);
+        }
         // Обновление изображения товара, если новое изображение предоставлено
         // Проверяем, загружен ли файл
         if ($request->hasFile('photo')) {
@@ -136,7 +141,7 @@ class AdminController extends Controller
             //переименовываем файл
             $fileName = $product->id . '.' . $file->getClientOriginalExtension(); // Получение расширения оригинального файла
             //удаление файла на сервере
-            Storage::delete($product->photo);
+            if($product->photo != NULL)Storage::delete($product->photo);
             // Сохраняем файл на сервере
             $filePathToPlace = $file->storeAs($filePath, $fileName);
             $product->photo = $filePathToPlace; // Сохраняем путь до файла
