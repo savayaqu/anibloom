@@ -37,7 +37,7 @@
             <div class="card-body" style="display: flex; flex-direction: row;">
                 <div v-for="product in category.products" :key="product.id"  style="width: 30%;">
                     <div style="text-align: center; display: flex; flex-direction: column; align-items: center">
-                        <img :src="'/public/' + product.photo">
+                        <img :src="'/storage/' + product.photo">
                         <strong>{{ product.name }}</strong>
                         <div>{{ product.price }}</div>
                         <button>Добавь в корзину</button>
