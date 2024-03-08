@@ -12,7 +12,7 @@
     <script defer src="/public/js/my.js"></script>
 
 </head>
-<body id="app">
+<body id="app" style="margin: 0 auto; padding: 0 0">
 
     <nav>
         <ul class="nav">
@@ -36,18 +36,18 @@
             </div>
             <div class="card-body" style="display: flex; flex-direction: row;">
                 <div v-for="product in category.products" :key="product.id"  style="width: 30%;">
-                    <div>
+                    <div style="text-align: center; display: flex; flex-direction: column; align-items: center">
+                        <img :src="'/public/' + product.photo">
                         <strong>{{ product.name }}</strong>
-                        <div>{{ product.description }}</div>
                         <div>{{ product.price }}</div>
+                        <button>Добавь в корзину</button>
                     </div>
                 </div>
-
             </div>
             <a :href="'http://anibloom/api/category/' + category.id">Просмотреть все</a>
         </div>
-
     </section>
+
 
     <section class="p-2" v-if="page === 'auth'">
         <h2>Авторизация</h2>
