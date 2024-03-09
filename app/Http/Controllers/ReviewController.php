@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Exceptions\ApiException;
 use App\Http\Requests\ReviewCreateRequest;
 use App\Http\Requests\ReviewUpdateRequest;
 use App\Models\Compound;
@@ -25,7 +26,7 @@ class ReviewController extends Controller
 
         // Если заказ не найден, возвращаем сообщение об ошибке
         if (!$order) {
-            return response()->json(['error' => 'Вы не можете оставить отзыв на товар, который вы не покупали'], 403);
+            throw new ApiException(404, 'Вы не можете оставить отзыв на товар, который вы не покупали');
         }
 
         // Проверяем, оставлял ли пользователь уже отзыв на данный товар
@@ -35,7 +36,8 @@ class ReviewController extends Controller
 
         // Если пользователь уже оставлял отзыв, возвращаем сообщение об ошибке
         if ($existingReview) {
-            return response()->json(['error' => 'Вы уже оставили отзыв на этот товар'], 403);
+            throw new ApiException(403, 'Вы уже оставили отзыв на этот товар');
+
         }
 
         // Сохранение нового отзыва
@@ -56,8 +58,6 @@ class ReviewController extends Controller
         // Получаем текущего пользователя
         $user = auth()->user();
 
-
-
         // Находим отзыв по id и проверяем, принадлежит ли он текущему пользователю
         $review = Review::where('product_id', $productId)
             ->where('user_id', $user->id)
@@ -65,17 +65,16 @@ class ReviewController extends Controller
 
         // Проверяем, найден ли отзыв и принадлежит ли он текущему пользователю
         if (!$review) {
-            return response()->json(['error' => 'Отзыв не найден или не принадлежит вам'], 404);
+            throw  new ApiException(404, 'Отзыв не найден или не принадлежит вам');
         }
 
         // Проверяем, чтобы пользователь не пытался изменить отзыв для другого товара
         if ($review->product_id != $productId) {
-            return response()->json(['error' => 'Отзыв принадлежит другому товару'], 403);
+            throw  new ApiException(403, 'Отзыв принадлежит другому товару');
         }
 
         // Обновляем данные отзыва
-        $review->rating = $request->input('rating');
-        $review->textReview = $request->input('textReview');
+        $review->fill($request->only(['rating', 'textReview']));
         $review->save();
 
         // Возвращаем ответ с сообщением об успешном обновлении отзыва
@@ -93,7 +92,7 @@ class ReviewController extends Controller
 
         // Проверяем, был ли найден отзыв
         if (!$review) {
-            return response()->json(['error' => 'Отзыв не найден'], 404);
+            throw  new ApiException(404, 'Отзыв не найден');
         }
 
         // Удаляем отзыв

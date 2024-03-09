@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Exceptions\ApiException;
 use App\Http\Requests\OrderCreateRequest;
 use App\Models\Cart;
 use App\Models\Compound;
@@ -34,6 +35,10 @@ class OrderController extends Controller
         // Получаем товары из корзины пользователя
         $cartItems = Cart::where('user_id', $user->id)->get();
 
+        //Если товаров нет, то выводим сообщение об ошибке
+        if($cartItems->isEmpty()) {
+            throw new ApiException(404, 'Не удалось оформить заказ, возможно, ваша корзина пуста');
+        }
         foreach ($cartItems as $cartItem) {
             // Находим товар по его ID
             $product = Product::find($cartItem->product_id);
@@ -66,7 +71,7 @@ class OrderController extends Controller
         }
 
         // Возвращаем ответ с сообщением об успешном оформлении заказа
-        return response()->json(['message' => 'Заказ успешно создан'], 200);
+        return response()->json(['message' => 'Заказ успешно оформлен'], 200);
     }
 
 }

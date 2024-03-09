@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Exceptions\ApiException;
 use App\Models\Cart;
 use App\Models\Product;
 use Illuminate\Http\Request;
@@ -36,7 +37,7 @@ class CartController extends Controller
 
         // Проверяем, найден ли товар в корзине
         if (!$cartItem) {
-            return response()->json(['error' => 'Товар не найден в вашей корзине'], 404);
+            throw new ApiException(404, 'Товар не найден в вашей корзине');
         }
 
         // Проверяем, чтобы новое количество было положительным числом
@@ -48,7 +49,7 @@ class CartController extends Controller
             // Возвращаем ответ с сообщением об успешном обновлении корзины
             return response()->json(['message' => 'Количество товара в корзине успешно обновлено'], 200);
         } else {
-            return response()->json(['error' => 'Количество товара должно быть положительным числом'], 400);
+            throw new ApiException(400, 'Количество товара должно быть положительным числом');
         }
     }
 
@@ -57,7 +58,7 @@ class CartController extends Controller
         $product = Product::find($id);
         // Проверка на существование товара
         if(!$product) {
-            return response()->json(['error' => 'Продукт не найден'], 404);
+            throw new ApiException(404, 'Товар не найден');
         }
 
         // Получение доступного количества товара из базы данных
