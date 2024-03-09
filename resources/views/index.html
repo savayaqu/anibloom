@@ -1,19 +1,19 @@
 <!doctype html>
-<html lang="en">
+<html lang="ru">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport"
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Знакомство с библиотекой vue 3</title>
+    <title>Главная</title>
     <link rel="stylesheet" href="/public/css/bootstrap.css">
     <link rel="stylesheet" href="/public/css/my.css">
     <script defer src="/public/js/vue.3.4.21.global.js"></script>
     <script defer src="/public/js/my.js"></script>
 
 </head>
-<body id="app" style="margin: 0 auto; padding: 0 0">
-
+<body id="app" style="max-width: 1170px; margin-left: auto; margin-right: auto; padding-left: 16px; padding-right: 16px; background: #FFFFFF;">
+<header>
     <nav>
         <ul class="nav">
             <li class="p-4"><a @click="linkpage('main')" href="#">Главная</a></li>
@@ -24,27 +24,27 @@
             <li class="p-4"><a @click="linkpage('posts')" href="#">Посты</a></li>
             <li class="p-4"><a @click="theme" href="#">{{ theme_name }}</a></li>
         </ul>
+        <img src="/public/images/logo.png" style="width: 139px; height: 124px;" alt="Логотип">
     </nav>
+</header>
 
     <section class="p-2" v-if="page === 'main'">
-        <h2>Декларативная отрисовка</h2>
-        <p :title="title">{{ message }}</p>
-        <h2>Товары</h2>
-        <div v-for="category in categories" :key="category.id">
+        <h2 style="width: 540px; display: flex; justify-content: center; text-align: center; margin: 0 auto; font-weight: 700">Интернет-магазин аниме товаров «Anibloom»</h2>
+        <div v-for="category in categories" :key="category.id" style="margin-top: 10px;">
             <div class="card-header">
                 <h3 style="text-align: center">{{ category.name }}</h3>
             </div>
-            <div class="card-body" style="display: flex; flex-direction: row;">
-                <div v-for="product in category.products" :key="product.id"  style="width: 30%;">
-                    <div style="text-align: center; display: flex; flex-direction: column; align-items: center">
-                        <img :src="'/storage/' + product.photo">
-                        <strong>{{ product.name }}</strong>
-                        <div>{{ product.price }}</div>
-                        <button>Добавь в корзину</button>
+            <div class="card-body" style="display: flex; justify-content: center; gap: 145px;">
+                <div v-for="product in category.products" :key="product.id"  style="width: 279px; border:ridge 10px #F2364A; height: 485px;">
+                    <div style="margin: 11px; display: flex; flex-direction: column;">
+                        <img style="width: 250px; height: 272px;" :src="'/storage/' + product.photo" alt="{{product.name}}">
+                        <strong style="text-align: center; margin-top: 13px; color: #333333; height:25px; font-size: 16px; font-weight: 600;">{{ product.name }}</strong>
+                        <strong style="margin-top: 86px; color: #333333; font-size: 28px; font-weight: 800">{{ product.price }} руб</strong>
+                        <button style="margin: 0 auto; background: #F2364A; border: white 2px solid; border-radius: 10px; width: 235px; height: 40px; color: white; font-size: 16px;">В корзину</button>
                     </div>
                 </div>
             </div>
-            <a :href="'http://anibloom/api/category/' + category.id">Просмотреть все</a>
+            <a :href="'http://anibloom/api/category/' + category.id" style="font-size: 24px; color: white; text-decoration: none; display: flex; justify-content: center; width: 500px; height: 75px; border-radius: 10px; text-align: center; font-weight: 600; background: limegreen; border: 1px solid white; margin: 0 auto;">Просмотреть все товары категории "{{category.name}}"</a>
         </div>
     </section>
 
@@ -67,8 +67,6 @@
             <button class="btn btn-dark m-3 w-50">Создать аккаунт</button>
         </form>
     </section>
-
-
 
 </body>
 </html>
