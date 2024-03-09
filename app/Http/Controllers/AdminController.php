@@ -64,7 +64,7 @@ class AdminController extends Controller
             // Переименовываем файл
             $fileName = $productId . '.' . $file->getClientOriginalExtension(); // Получение расширения оригинального файла
             // Сохраняем файл на сервере
-            $filePathToPlace = $file->storeAs($filePath, $fileName, 'public');
+            $filePathToPlace = $file->storeAs($filePath, $fileName);
 
             // Проверяем успешность сохранения файла
             if ($fileName) {
@@ -143,7 +143,7 @@ class AdminController extends Controller
             //удаление файла на сервере
             if($product->photo != NULL)Storage::delete($product->photo);
             // Сохраняем файл на сервере
-            $filePathToPlace = $file->storeAs($filePath, $fileName, 'public');
+            $filePathToPlace = $file->storeAs($filePath, $fileName);
             $product->photo = $filePathToPlace; // Сохраняем путь до файла
         }
         // Сохранение остальных данных товара
