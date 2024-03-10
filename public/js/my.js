@@ -38,33 +38,6 @@ let app = {
         linkpage(link) {
             this.page = link;
         },
-        /*
-        getCategories() {
-            fetch('http://anibloom/api/categories', {
-                method: 'GET',
-            })
-                .then(response => response.json())
-                .then(data => {
-                    console.log('Полученные данные:', data); // Отладочный вывод
-                    this.categories = data.data; // Обращаемся к массиву категорий в объекте data
-
-                    // Создаем массив с id категорий
-                    this.categoryIds = this.categories.map(category => category.id);
-                })
-                .catch(error => console.error('Ошибка при загрузке категорий:', error));
-        },
-
-        getProductsCategory() {
-            fetch('http://anibloom/api/category/2', {
-                method: 'GET',
-            })
-                .then(response => response.json())
-                .then(data => {
-                    this.products = data.data;
-                })
-        }
-
-         */
         getCategoriesAndProducts() {
             fetch('/api/categories', {
                 method: 'GET',
@@ -91,7 +64,34 @@ let app = {
                 .catch(error => {
                     console.error('Error fetching categories:', error);
                 });
-        }
+        },
+        // Добавляем метод для отправки формы авторизации
+        login() {
+            // Получаем данные из формы
+            let login = document.getElementById('login').value;
+            let password = document.getElementById('password').value;
+
+            // Отправляем запрос на сервер
+            fetch('/api/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ login: login, password: password }),
+            })
+                .then(response => {
+                    if (response.ok) {
+                        // Редирект на главную страницу
+                        window.location.href = '/';
+                    } else {
+                        // Обработка ошибки
+                        console.error('Ошибка аутентификации');
+                    }
+                })
+                .catch(error => {
+                    console.error('Ошибка сети:', error);
+                });
+        },
 
 
 
@@ -101,5 +101,6 @@ let app = {
 let VueApp = Vue.createApp(app).mount('#app');
 
 VueApp.getCategoriesAndProducts();
+
 
 

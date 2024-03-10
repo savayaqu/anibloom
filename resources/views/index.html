@@ -65,6 +65,31 @@
             <p class="end city bold">Томск <a href="vk.com/anibloomtomsk" class="a">vk.com/anibloomtomsk</a></p>
         </div>
     </section>
+
+
+<section class="p-2" v-if="page === 'auth'">
+    <h2>Авторизация</h2>
+    <form class="form-control" @submit.prevent>
+        <input class="form-control m-3 w-50" type="text" id="login" name="login" placeholder="Введи логин">
+        <input class="form-control m-3 w-50" type="password" id="password" name="password" placeholder="Введи пароль">
+        <button class="btn btn-dark m-3 w-50" @click="login">Вход</button>
+
+        <button @click="linkpage('reg')" class="btn btn-dark m-3 w-50">Не загестрированы? Зарегистрируйтесь!</button>
+    </form>
+</section>
+
+
+<section class="p-2" v-if="page === 'reg'">
+    <h2>Регистрация</h2>
+    <form class="form-control">
+        <input class="form-control m-3 w-50" type="text" placeholder="Введи ФИО">
+        <input class="form-control m-3 w-50" type="text" placeholder="Введи логин">
+        <input class="form-control m-3 w-50" type="password" placeholder="Введи пароль">
+        <button class="btn btn-dark m-3 w-50">Создать аккаунт</button>
+    </form>
+</section>
+
+
 <footer style="height: 300px;">
     <div style="display: flex; justify-content: space-between">
         <div style="display: flex; flex-direction: column; justify-content: space-between">
@@ -105,22 +130,6 @@
         </div>
     </div>
 </footer>
-    <section class="p-2" v-if="page === 'auth'">
-        <h2>Авторизация</h2>
-        <form class="form-control">
-            <input class="form-control m-3 w-50" type="text" placeholder="Введи логин">
-            <input class="form-control m-3 w-50" type="password" placeholder="Введи пароль">
-            <button class="btn btn-dark m-3 w-50">Вход</button>
-        </form>
-    </section>
-    <section class="p-2" v-if="page === 'reg'">
-        <h2>Регистрация</h2>
-        <form class="form-control">
-            <input class="form-control m-3 w-50" type="text" placeholder="Введи ФИО">
-            <input class="form-control m-3 w-50" type="text" placeholder="Введи логин">
-            <input class="form-control m-3 w-50" type="password" placeholder="Введи пароль">
-            <button class="btn btn-dark m-3 w-50">Создать аккаунт</button>
-        </form>
-    </section>
+
 </body>
 </html>
