@@ -16,7 +16,16 @@ const SpisokFu = {
         </ul>
     `
 }
+function formatDate(input) {
+    // Получаем введенную дату
+    let date = new Date(input.value);
 
+    // Преобразуем дату в формат "ГГГГ-ММ-ДД"
+    let formattedDate = date.getFullYear() + '-' + ('0' + (date.getMonth() + 1)).slice(-2) + '-' + ('0' + date.getDate()).slice(-2);
+
+    // Устанавливаем новое значение в поле ввода
+    input.value = formattedDate;
+}
 // Конфигурация приложения
 let app = {
     // Раздел с переменными
@@ -68,8 +77,8 @@ let app = {
         // Добавляем метод для отправки формы авторизации
         login() {
             // Получаем данные из формы
-            let login = document.getElementById('login').value;
-            let password = document.getElementById('password').value;
+            let login = document.getElementById('loginAuth').value;
+            let password = document.getElementById('passwordAuth').value;
 
             // Отправляем запрос на сервер
             fetch('/api/login', {
@@ -92,6 +101,51 @@ let app = {
                     console.error('Ошибка сети:', error);
                 });
         },
+        register() {
+            // Получаем данные из формы
+            let surname = document.getElementById('surname').value;
+            let name = document.getElementById('name').value;
+            let patronymic = document.getElementById('patronymic').value;
+            let login = document.getElementById('login').value;
+            let password = document.getElementById('password').value;
+            let birth = document.getElementById('birth').value;
+            let email = document.getElementById('email').value;
+            let telephone = document.getElementById('telephone').value;
+
+            // Отправляем запрос на сервер
+            fetch('/api/register', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    surname: surname,
+                    name: name,
+                    patronymic: patronymic,
+                    login: login,
+                    password: password,
+                    birth: birth,
+                    email: email,
+                    telephone: telephone
+                }),
+            })
+                .then(response => {
+                    if (response.ok) {
+                        // Редирект на главную страницу
+                        window.location.href = '/';
+                    } else {
+                        // Отображаем сообщение об ошибке на странице
+                        response.json().then(data => {
+                            document.getElementById('error-message').innerText = data.error;
+                        });
+                    }
+                })
+                .catch(error => {
+                    console.error('Ошибка сети:', error);
+                });
+        },
+
+
 
 
 

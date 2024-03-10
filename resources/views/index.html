@@ -70,8 +70,8 @@
 <section class="p-2" v-if="page === 'auth'">
     <h2>Авторизация</h2>
     <form class="form-control" @submit.prevent>
-        <input class="form-control m-3 w-50" type="text" id="login" name="login" placeholder="Введи логин">
-        <input class="form-control m-3 w-50" type="password" id="password" name="password" placeholder="Введи пароль">
+        <input class="form-control m-3 w-50" type="text" id="loginAuth" name="login" placeholder="Введи логин">
+        <input class="form-control m-3 w-50" type="password" id="passwordAuth" name="passwordAuth" placeholder="Введи пароль">
         <button class="btn btn-dark m-3 w-50" @click="login">Вход</button>
 
         <button @click="linkpage('reg')" class="btn btn-dark m-3 w-50">Не загестрированы? Зарегистрируйтесь!</button>
@@ -81,11 +81,17 @@
 
 <section class="p-2" v-if="page === 'reg'">
     <h2>Регистрация</h2>
-    <form class="form-control">
-        <input class="form-control m-3 w-50" type="text" placeholder="Введи ФИО">
-        <input class="form-control m-3 w-50" type="text" placeholder="Введи логин">
-        <input class="form-control m-3 w-50" type="password" placeholder="Введи пароль">
-        <button class="btn btn-dark m-3 w-50">Создать аккаунт</button>
+    <form class="form-control" @submit.prevent>
+        <input class="form-control m-3 w-50" id="surname" name="surname" type="text" placeholder="Введи фамилия">
+        <input class="form-control m-3 w-50" id="name" name="name" type="text" placeholder="Введи имя">
+        <input class="form-control m-3 w-50" id="patronymic" name="patronymic" type="text" placeholder="Введи отчество">
+        <input class="form-control m-3 w-50" id="login" name="login" type="text" placeholder="Введи логин">
+        <input class="form-control m-3 w-50" id="password" name="password" type="password" placeholder="Введи пароль">
+        <input class="form-control m-3 w-50" id="birth" name="birth" type="date" placeholder="Введи дату рождения" onchange="formatDate(this)">
+        <input class="form-control m-3 w-50" id="email" name="email" type="email" placeholder="Введи email">
+        <input class="form-control m-3 w-50" id="telephone" name="telephone" type="tel" placeholder="Введи телефон">
+        <button class="btn btn-dark m-3 w-50" @click="register">Создать аккаунт</button>
+        <button @click="linkpage('auth')" class="btn btn-dark m-3 w-50">Зарегистророваны? Войдите прямо сейчас</button>
     </form>
 </section>
 
