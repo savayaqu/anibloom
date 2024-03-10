@@ -23,15 +23,11 @@ class AuthController extends Controller
         $user->api_token = $newToken;
         $user->save();
 
-        // Сохранение токена в куки
-        $response = response()->json([
+        return response()->json([
             'data' => [
                 'user_token' => $user->api_token,
             ],
         ]);
-        $response->cookie('api_token', $user->api_token, 60 * 24 * 7); // Устанавливаем куки на неделю
-
-        return $response;
     }
     public function logout(Request $request) {
         $user = $request->user();

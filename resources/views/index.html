@@ -15,18 +15,53 @@
 </head>
 <body id="app" style="max-width: 1170px; margin-left: auto; margin-right: auto; padding-left: 16px; padding-right: 16px; background: #FFFFFF;">
 <header>
-    <nav>
-        <ul class="nav" style="display: flex; justify-content: center">
-            <li class="p-4"><a class="li" @click="linkpage('main')" href="#">Главная</a></li>
-            <li class="p-4"><a class="li" @click="linkpage('auth')" href="#">Профиль</a></li>
-        </ul>
-        <div style="display: flex;">
-            <img src="/public/images/logo.png" style="width: 139px; height: 124px;" alt="Логотип">
-            <input style="background: #F7F7F7; margin-top: 40px; margin-left: 50px; border-radius: 10px; border: black; color: #808080; width: 850px; height: 50px;" placeholder="Поиск" >
-        </div>
+    <nav class="nav" style="display: flex;align-items: center; gap: 30px">
+        <a class="li" @click="linkpage('main')"><img src="/public/images/logo.png" style="width: 120px; height: 120px;" alt="Логотип"></a>
+        <input style="background: #F7F7F7;border-radius: 10px; border: black; color: #808080; width: 750px; height: 50px;" placeholder="Поиск" >
+        <a class="li" @click="linkpage('profile')" href="#"><img src="/public/images/user.png" alt="profile" style="height: 30px; width: 30px"></a>
+        <a class="li" @click="linkpage('cart')" href="#"><img src="/public/images/cart.png" alt="cart" style="height: 30px; width: 30px"></a>
     </nav>
 </header>
-    <section class="p-2" v-if="page === 'main'">
+
+
+
+<section class="p-2" v-if="page === 'profile'">
+    <div v-if="getCookie('api_token')">
+        <h2>Профиль пользователя</h2>
+        <p><strong>Имя:</strong> {{ user.name }}</p>
+        <p><strong>Email:</strong> {{ user.email }}</p>
+        <p><strong>Телефон:</strong> {{ user.telephone }}</p>
+        <!-- Добавьте другие поля профиля, если необходимо -->
+    </div>
+    <div v-if="!getCookie('api_token')">
+        <h2>Авторизация</h2>
+        <form class="form-control" @submit.prevent>
+            <input class="form-control m-3 w-50" type="text" id="loginAuth" name="loginAuth" placeholder="Введи логин">
+            <input class="form-control m-3 w-50" type="password" id="passwordAuth" name="passwordAuth" placeholder="Введи пароль">
+            <button class="btn btn-dark m-3 w-50" @click="login">Вход</button>
+
+            <button @click="linkpage('reg')" class="btn btn-dark m-3 w-50">Не загестрированы? Зарегистрируйтесь!</button>
+        </form>
+    </div>
+</section>
+
+<section v-if="page === 'reg'">
+    <h2>Регистрация</h2>
+    <form class="form-control" @submit.prevent>
+        <input class="form-control m-3 w-50" id="surname" name="surname" type="text" placeholder="Введи фамилия">
+        <input class="form-control m-3 w-50" id="name" name="name" type="text" placeholder="Введи имя">
+        <input class="form-control m-3 w-50" id="patronymic" name="patronymic" type="text" placeholder="Введи отчество">
+        <input class="form-control m-3 w-50" id="login" name="login" type="text" placeholder="Введи логин">
+        <input class="form-control m-3 w-50" id="password" name="password" type="password" placeholder="Введи пароль">
+        <input class="form-control m-3 w-50" id="birth" name="birth" type="date" placeholder="Введи дату рождения" onchange="formatDate(this)">
+        <input class="form-control m-3 w-50" id="email" name="email" type="email" placeholder="Введи email">
+        <input class="form-control m-3 w-50" id="telephone" name="telephone" type="tel" placeholder="Введи телефон">
+        <button class="btn btn-dark m-3 w-50" @click="register">Создать аккаунт</button>
+        <button @click="linkpage('profile')" class="btn btn-dark m-3 w-50">Зарегистророваны? Войдите прямо сейчас</button>
+    </form>
+</section>
+
+<section class="p-2" v-if="page === 'main'">
         <div style="display: flex;">
             <a class="category2" :href="'http://anibloom/api/category/1'" style="font-size: 32px; text-decoration: none; display: flex; justify-content: center; width: 500px; border-radius: 10px; text-align: center; font-weight: 400; border: 1px solid white;">МАНГА</a>
             <a class="category2" :href="'http://anibloom/api/category/2'" style="font-size: 32px; text-decoration: none; display: flex; justify-content: center; width: 500px; border-radius: 10px; text-align: center; font-weight: 400; border: 1px solid white;">КРУЖКИ</a>
@@ -67,36 +102,13 @@
     </section>
 
 
-<section class="p-2" v-if="page === 'auth'">
-    <h2>Авторизация</h2>
-    <form class="form-control" @submit.prevent>
-        <input class="form-control m-3 w-50" type="text" id="loginAuth" name="login" placeholder="Введи логин">
-        <input class="form-control m-3 w-50" type="password" id="passwordAuth" name="passwordAuth" placeholder="Введи пароль">
-        <button class="btn btn-dark m-3 w-50" @click="login">Вход</button>
-
-        <button @click="linkpage('reg')" class="btn btn-dark m-3 w-50">Не загестрированы? Зарегистрируйтесь!</button>
-    </form>
-</section>
 
 
-<section class="p-2" v-if="page === 'reg'">
-    <h2>Регистрация</h2>
-    <form class="form-control" @submit.prevent>
-        <input class="form-control m-3 w-50" id="surname" name="surname" type="text" placeholder="Введи фамилия">
-        <input class="form-control m-3 w-50" id="name" name="name" type="text" placeholder="Введи имя">
-        <input class="form-control m-3 w-50" id="patronymic" name="patronymic" type="text" placeholder="Введи отчество">
-        <input class="form-control m-3 w-50" id="login" name="login" type="text" placeholder="Введи логин">
-        <input class="form-control m-3 w-50" id="password" name="password" type="password" placeholder="Введи пароль">
-        <input class="form-control m-3 w-50" id="birth" name="birth" type="date" placeholder="Введи дату рождения" onchange="formatDate(this)">
-        <input class="form-control m-3 w-50" id="email" name="email" type="email" placeholder="Введи email">
-        <input class="form-control m-3 w-50" id="telephone" name="telephone" type="tel" placeholder="Введи телефон">
-        <button class="btn btn-dark m-3 w-50" @click="register">Создать аккаунт</button>
-        <button @click="linkpage('auth')" class="btn btn-dark m-3 w-50">Зарегистророваны? Войдите прямо сейчас</button>
-    </form>
-</section>
 
 
-<footer style="height: 300px;">
+
+
+<footer style="height: 300px; padding-top: 100px">
     <div style="display: flex; justify-content: space-between">
         <div style="display: flex; flex-direction: column; justify-content: space-between">
             <div style="display: flex; justify-content: flex-start">

@@ -16,6 +16,7 @@ const SpisokFu = {
         </ul>
     `
 }
+
 function formatDate(input) {
     // Получаем введенную дату
     let date = new Date(input.value);
@@ -26,6 +27,10 @@ function formatDate(input) {
     // Устанавливаем новое значение в поле ввода
     input.value = formattedDate;
 }
+
+// Функция для получения значения куки по имени
+
+
 // Конфигурация приложения
 let app = {
     // Раздел с переменными
@@ -35,6 +40,7 @@ let app = {
             page: 'main',
             categories: [],
             products: [],
+            user: [],
         }
     },
     // Компоненты
@@ -53,7 +59,6 @@ let app = {
             })
                 .then(response => response.json())
                 .then(data => {
-                    console.log('Полученные данные:', data); // Отладочный вывод
                     this.categories = data.data; // Обращаемся к массиву категорий в объекте data
                     // Для каждой категории получаем первые 3 продукта
                     this.categories.forEach(category => {
@@ -90,16 +95,28 @@ let app = {
             })
                 .then(response => {
                     if (response.ok) {
-                        // Редирект на главную страницу
-                        window.location.href = '/';
+                        // Получаем токен из ответа
+                        return response.json();
                     } else {
-                        // Обработка ошибки
-                        console.error('Ошибка аутентификации');
+                        throw new Error('Ошибка аутентификации');
                     }
                 })
+                .then(data => {
+                    // Устанавливаем токен в куки
+                    document.cookie = `api_token=${data.data.user_token}; expires=${new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toUTCString()}; path=/`;
+
+                    // Редирект на главную страницу
+                    window.location.href = '/';
+                })
                 .catch(error => {
-                    console.error('Ошибка сети:', error);
+                    // Обработка ошибки
+                    console.error('Ошибка:', error);
                 });
+        },
+        getCookie(name) {
+            const value = `; ${document.cookie}`;
+            const parts = value.split(`; ${name}=`);
+            if (parts.length === 2) return parts.pop().split(';').shift();
         },
         register() {
             // Получаем данные из формы
@@ -144,16 +161,50 @@ let app = {
                     console.error('Ошибка сети:', error);
                 });
         },
+        // Загрузка данных пользователя
+        loadUserData() {
+            // Получаем все cookie
+            const cookies = document.cookie.split(';').map(cookie => cookie.trim());
+            // Находим cookie с именем 'api_token'
+            const apiTokenCookie = cookies.find(cookie => cookie.startsWith('api_token='));
 
+            // Если cookie с токеном найден
+            if (apiTokenCookie) {
+                // Извлекаем значение токена из cookie
+                const token = apiTokenCookie.split('=')[1];
 
+                // Опции запроса
+                const options = {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': 'Bearer ' + token
+                    }
+                };
 
-
-
-
+                // Отправка запроса на сервер
+                fetch('/api/profile', options)
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Ошибка при загрузке данных пользователя');
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        // Записываем данные пользователя в переменную user
+                        this.user = data.data;
+                    })
+                    .catch(error => {
+                        console.error('Ошибка при загрузке данных пользователя:', error);
+                    });
+            } else {
+                console.error('Cookie с токеном отсутствует');
+            }
+        }
     }
+
 }
 let VueApp = Vue.createApp(app).mount('#app');
-
+VueApp.loadUserData();
 VueApp.getCategoriesAndProducts();
 
 
