@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Exceptions\ApiException;
 use App\Http\Requests\CategoryCreateRequest;
 use App\Http\Requests\CategoryUpdateRequest;
 use App\Http\Requests\OrderUpdateRequest;
@@ -23,7 +24,7 @@ class AdminController extends Controller
         // Проверяем, есть ли категория с таким именем уже в базе данных
         $existingCategory = Category::where('name', $request->input('name'))->first();
         if ($existingCategory) {
-            return response()->json(['error' => 'Категория с таким именем уже существует'], 422);
+            throw new ApiException(422, 'Категория с таким именем уже существует');
         }
 
         // Создаем новую категорию
@@ -43,7 +44,7 @@ class AdminController extends Controller
         // Проверяем, есть ли продукт с таким именем уже в базе данных
         $existingProduct = Product::where('name', $request->input('name'))->first();
         if ($existingProduct) {
-            return response()->json(['error' => 'Продукт с таким именем уже существует'], 422);
+            throw new ApiException(422, 'Продукт с таким именем уже существует');
         }
 
         // Создаем новый продукт
@@ -64,7 +65,7 @@ class AdminController extends Controller
             // Переименовываем файл
             $fileName = $productId . '.' . $file->getClientOriginalExtension(); // Получение расширения оригинального файла
             // Сохраняем файл на сервере
-            $filePathToPlace = $file->storeAs($filePath, $fileName, 'public');
+            $filePathToPlace = $file->storeAs($filePath, $fileName);
 
             // Проверяем успешность сохранения файла
             if ($fileName) {
@@ -72,14 +73,14 @@ class AdminController extends Controller
                 $product->photo = $filePathToPlace; // Сохраняем путь до файла
                 $product->save();
 
-                return response()->json(['message' => 'Product created successfully'], 201);
+                return response()->json(['message' => 'Продукт успешно создан'], 201);
             } else {
                 // Если возникла ошибка при сохранении файла
-                return response()->json(['error' => 'Failed to save file'], 500);
+                throw new ApiException(500, 'Ошибка сохранить файл');
             }
         } else {
             // Если файл не был загружен, просто возвращаем ответ об успешном создании продукта
-            return response()->json(['message' => 'Product created successfully'], 201);
+            return response()->json(['message' => 'Продукт успешно создан'], 201);
         }
     }
 
@@ -87,6 +88,7 @@ class AdminController extends Controller
     public function allUsers()
     {
         $users = User::where('role_id', 1)->get();
+        if($users->isEmpty()) {throw new ApiException(404, 'Пользователи не найдены');}
         return response([
             'data' => $users,
         ]);
@@ -94,13 +96,17 @@ class AdminController extends Controller
     public function allReviews()
     {
         $reviews = Review::all();
+        if($reviews->isEmpty()) {throw new ApiException(404, 'Отзывы не найдены');}
         return response([
             'data' => $reviews,
         ]);
     }
     public function allOrders()
     {
+
         $orders = Order::all();
+        if($orders->isEmpty()) {throw new ApiException(404, 'Заказы не найдены');}
+
         return response([
             'data' => $orders,
         ]);
@@ -110,7 +116,7 @@ class AdminController extends Controller
         //Проверка существования
         $category = Category::find($id);
         if (!$category) {
-            return response()->json(['error' => 'Категория не найдена'], 404);
+            throw new ApiException(404, 'Категория не найдена');
         }
         $category->name = $request->input('name');
         $category->save();
@@ -122,12 +128,12 @@ class AdminController extends Controller
         //Проверка существования
         $product = Product::find($id);
         if (!$product) {
-            return response()->json(['error' => 'Товар не найден'], 404);
+            throw new ApiException(404, 'Товар не найден');
         }
         // Проверяем, есть ли продукт с таким именем уже в базе данных
         $existingProduct = Product::where('name', $request->input('name'))->first();
         if ($existingProduct) {
-            return response()->json(['error' => 'Продукт с таким именем уже существует'], 422);
+            throw new ApiException(422, 'Продукт с таким именем уже существует');
         }
         // Обновление изображения товара, если новое изображение предоставлено
         // Проверяем, загружен ли файл
@@ -143,7 +149,7 @@ class AdminController extends Controller
             //удаление файла на сервере
             if($product->photo != NULL)Storage::delete($product->photo);
             // Сохраняем файл на сервере
-            $filePathToPlace = $file->storeAs($filePath, $fileName, 'public');
+            $filePathToPlace = $file->storeAs($filePath, $fileName);
             $product->photo = $filePathToPlace; // Сохраняем путь до файла
         }
         // Сохранение остальных данных товара
@@ -154,13 +160,13 @@ class AdminController extends Controller
     }
 
 
-
+    //Обновление заказа
     public function updateOrder(OrderUpdateRequest $request, $id)
     {
         //Проверка существования
         $order = Order::find($id);
         if (!$order) {
-            return response()->json(['error' => 'Статус заказа не найден'], 404);
+            throw new ApiException(404, 'Заказ не найден');
         }
         // Заполнение модели данными из запроса
         $order->fill($request->only(['address', 'payment_id', 'status_id']));
@@ -176,7 +182,7 @@ class AdminController extends Controller
         //Проверка существования
         $review = Review::find($id);
         if (!$review) {
-            return response()->json(['error' => 'Отзыв не найден'], 404);
+            throw new ApiException(404, 'Отзыв не найден');
         }
         // Заполнение модели данными из запроса
         $review->fill($request->only(['rating', 'textReview']));
@@ -192,12 +198,12 @@ class AdminController extends Controller
         $category = Category::find($id);
 
         if (!$category) {
-            return response()->json(['error' => 'Category not found'], 404);
+            throw new ApiException(404, 'Категория не найдена');
         }
 
         $category->delete();
 
-        return response()->json(['message' => 'Category deleted successfully'], 200);
+        return response()->json(['message' => 'Категория успешно удалена'], 200);
     }
 
     // Удаление товара
@@ -206,12 +212,11 @@ class AdminController extends Controller
         $product = Product::find($id);
 
         if (!$product) {
-            return response()->json(['error' => 'Product not found'], 404);
+            throw new ApiException(404, 'Продукт не найден');
+
         }
-
         $product->delete();
-
-        return response()->json(['message' => 'Product deleted successfully'], 200);
+        return response()->json(['message' => 'Продукт успешно удален'], 200);
     }
 
     // Удаление пользователя
@@ -220,12 +225,12 @@ class AdminController extends Controller
         $user = User::find($id);
 
         if (!$user) {
-            return response()->json(['error' => 'User not found'], 404);
+            throw new ApiException(404, 'Пользователь не найден');
         }
 
         $user->delete();
 
-        return response()->json(['message' => 'User deleted successfully'], 200);
+        return response()->json(['message' => 'Пользователь успешно удален'], 200);
     }
 
     // Удаление отзыва
@@ -234,12 +239,12 @@ class AdminController extends Controller
         $review = Review::find($id);
 
         if (!$review) {
-            return response()->json(['error' => 'Review not found'], 404);
+            throw new ApiException(404, 'Отзыв не найден');
         }
 
         $review->delete();
 
-        return response()->json(['message' => 'Review deleted successfully'], 200);
+        return response()->json(['message' => 'Отзыв успешно удален'], 200);
     }
 
 

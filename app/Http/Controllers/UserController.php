@@ -14,10 +14,7 @@ class UserController extends Controller
         $user = new User($request->all());
         $user->save();
         return response([
-            'data' => [
-                'id' => $user->id,
-                'status' => 'created',
-            ],
+            'message' => 'Регистрация прошла успешно'
         ], 201);
     }
     public function this() {
@@ -29,7 +26,7 @@ class UserController extends Controller
     }
     public function show(int $id) {
         $user = User::find($id);
-        if(!$user) throw new ApiException(404, 'User not found');
+        if(!$user) throw new ApiException(404, 'Пользователь не найден');
         return response([
             'data' => $user,
         ]);
@@ -38,39 +35,13 @@ class UserController extends Controller
         // Получаем текущего аутентифицированного пользователя
         $user = auth()->user();
 
-        // Проверяем, были ли переданы данные для обновления каждого поля
-        if ($request->filled('name')) {
-            $user->name = $request->input('name');
-        }
-
-        if ($request->filled('surname')) {
-            $user->surname = $request->input('surname');
-        }
-
-        if ($request->filled('patronymic')) {
-            $user->patronymic = $request->input('patronymic');
-        }
-
-        if ($request->filled('login')) {
-            $user->login = $request->input('login');
-        }
-
-        if ($request->filled('birth')) {
-            $user->birth = $request->input('birth');
-        }
-
-        if ($request->filled('email')) {
-            $user->email = $request->input('email');
-        }
-
-        if ($request->filled('telephone')) {
-            $user->telephone = $request->input('telephone');
-        }
+        //Обновляем данные
+        $user->fill($request->all());
 
         // Сохраняем обновленные данные профиля пользователя
         $user->save();
 
-        return response()->json(['message' => 'Профиль пользователя успешно обновлен'], 200);
+        return response()->json(['message' => 'Профиль успешно обновлен'], 200);
     }
 
 }

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Exceptions\ApiException;
 use App\Http\Requests\LoginRequest;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -15,7 +16,7 @@ class AuthController extends Controller
             ->where('password', $request->password)
             ->first();
 
-        if (!$user) return response('Authentication failed', 401);
+        if (!$user) throw new ApiException(401, 'Ошибка аутентификации');
 
         $newToken = Hash::make(microtime(true) * 1000);
 
@@ -30,12 +31,12 @@ class AuthController extends Controller
     }
     public function logout(Request $request) {
         $user = $request->user();
-        if (!$user) return response('No authenticate', 403);
+        if (!$user) throw new ApiException(401, 'Ошибка аутентификации');
         $user->api_token = null;
         $user->save();
         return response([
             'data' => [
-                'message' => 'logout',
+                'message' => 'Вы успешно вышли из системы',
             ],
         ]);
     }

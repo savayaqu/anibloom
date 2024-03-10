@@ -1,1 +1,2 @@
 ![Да я](https://psv4.userapi.com/c235131/u256381353/docs/d51/9d2ebde99b93/64432a51a4f5f148073174.gif?extra=fQcsGN__80xV8OL2btik9CLdiqP3w28nShpKz7WadVbOxno4RVnH7LS5aeC8-g809ssB-BYLiIre3yGBdQLDfTBPwx-Xfv2ORnQQu16pLOv44T6aEzq7PAoFWsjgu77xO5QRXWwW37rtnewyLZA2oL4)
+после всего создать ссылку на storage в public через php artisan link:storage

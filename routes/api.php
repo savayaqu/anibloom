@@ -31,7 +31,7 @@ Route::get('/categories' , [CategoryController::class, 'index']);
     //Просмотр товаров определенной категории
 Route::get('/category/{id}' , [ProductController::class, 'showMany']);
     //Просмотр конкретного товара
-Route::get('/category/product/{id}' , [ProductController::class, 'show']);
+Route::get('/product/{id}' , [ProductController::class, 'show']);
 
 
 
@@ -51,11 +51,11 @@ Route::middleware('auth:api')->post('/product/{id}/review', [ReviewController::c
     //Редактирование корзины
 Route::middleware('auth:api')->patch('/cart', [CartController::class, 'update']);
     //Редактирование отзыва
-Route::middleware('auth:api')->patch('/category/product/{id}/review', [ReviewController::class, 'update']);
+Route::middleware('auth:api')->patch('/product/{id}/review', [ReviewController::class, 'update']);
     //Редактирование своего профиля
 Route::middleware('auth:api')->patch('/profile', [UserController::class, 'updateProfile']);
     //Удаление отзыва
-Route::middleware('auth:api')->delete('/category/product/{id}/review', [ReviewController::class, 'delete']);
+Route::middleware('auth:api')->delete('/product/{id}/review', [ReviewController::class, 'delete']);
 
 
 
