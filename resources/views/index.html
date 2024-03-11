@@ -18,40 +18,11 @@
     <nav class="nav" style="display: flex;align-items: center; gap: 30px">
         <a class="li" @click="linkpage('main')"><img src="/public/images/logo.png" style="width: 120px; height: 120px;" alt="Логотип"></a>
         <input style="background: #F7F7F7;border-radius: 10px; border: black; color: #808080; width: 750px; height: 50px;" placeholder="Поиск" >
-        <a class="li" @click="linkpage('profile')" href="#"><img src="/public/images/user.png" alt="profile" style="height: 30px; width: 30px"></a>
+        <a class="li" href="profile.html" @click="linkpage('main')"><img src="/public/images/user.png" alt="profile" style="height: 30px; width: 30px"></a>
         <a class="li" @click="linkpage('cart')" href="#"><img src="/public/images/cart.png" alt="cart" style="height: 30px; width: 30px"></a>
+        <a class="li" @click="linkpage('category')" href="#"></a>
     </nav>
 </header>
-
-
-
-<section class="p-2" v-if="page === 'profile'">
-    <div v-if="getCookie('api_token')">
-        <h2>Профиль пользователя</h2>
-        <h3>Режим редактирования</h3>
-        <form class="form-control" @submit.prevent>
-            <input class="form-control m-3 w-50" id="surnameP" name="surnameP" type="text" placeholder="Введи фамилия" v-model="user.surname">
-            <input class="form-control m-3 w-50" id="nameP" name="nameP" type="text" placeholder="Введи имя" v-model="user.name">
-            <input class="form-control m-3 w-50" id="patronymicP" name="patronymicP" type="text" placeholder="Введи отчество" v-model="user.patronymic">
-            <input class="form-control m-3 w-50" id="loginP" name="loginP" type="text" placeholder="Введи логин" v-model="user.login">
-            <input class="form-control m-3 w-50" id="passwordP" name="passwordP" type="text" placeholder="Введи пароль" v-model="user.password">
-            <input class="form-control m-3 w-50" id="birthP" name="birthP" type="date" placeholder="Введи дату рождения" onchange="formatDate(this)" v-model="user.birth">
-            <input class="form-control m-3 w-50" id="emailP" name="emailP" type="email" placeholder="Введи email" v-model="user.email">
-            <input class="form-control m-3 w-50" id="telephoneP" name="telephoneP" type="tel" placeholder="Введи телефон" v-model="user.telephone">
-            <button class="btn btn-dark m-3 w-50" @click="updateProfile">Сохранить изменения</button>
-        </form>
-    </div>
-    <div v-if="!getCookie('api_token')">
-        <h2>Авторизация</h2>
-        <form class="form-control" @submit.prevent>
-            <input class="form-control m-3 w-50" type="text" id="loginAuth" name="loginAuth" placeholder="Введи логин">
-            <input class="form-control m-3 w-50" type="password" id="passwordAuth" name="passwordAuth" placeholder="Введи пароль">
-            <button class="btn btn-dark m-3 w-50" @click="login">Вход</button>
-
-            <button @click="linkpage('reg')" class="btn btn-dark m-3 w-50">Не загестрированы? Зарегистрируйтесь!</button>
-        </form>
-    </div>
-</section>
 
 <section v-if="page === 'cart'">
     <h2>Корзина</h2>
@@ -68,34 +39,30 @@
     </div>
 </section>
 
+<section class="p-2" v-if="page === 'category'">
+    <div class="card-body" style="display: flex; justify-content: center; gap: 145px;">
+        <div v-for="product in category.products" :key="product.id"  style="width: 279px; border:ridge 10px #F2364A; height: 485px;">
+            <div style="margin: 11px; display: flex; flex-direction: column;">
+                <img style="width: 250px; height: 272px;" :src="'/storage/' + product.photo" alt="{{product.name}}">
+                <strong style="text-align: center; margin-top: 13px; color: #333333; height:25px; font-size: 16px; font-weight: 600;">{{ product.name }}</strong>
+                <strong style="margin-top: 86px; color: #333333; font-size: 28px; font-weight: 800">{{ product.price }} руб</strong>
+                <a :href="'http://anibloom/api/category/' + category.id" style="font-size: 24px; color: white; text-decoration: none; display: flex; justify-content: center; width: 500px; height: 75px; border-radius: 10px; text-align: center; font-weight: 600; background: limegreen; border: 1px solid white; margin: 0 auto;">Просмотреть все товары категории "{{category.name}}"</a>
+            </div>
+        </div>
+    </div>
+</section>
 
-
-
-
-
-
-<section v-if="page === 'reg'">
-    <h2>Регистрация</h2>
-    <form class="form-control" @submit.prevent>
-        <input class="form-control m-3 w-50" id="surname" name="surname" type="text" placeholder="Введи фамилия">
-        <input class="form-control m-3 w-50" id="name" name="name" type="text" placeholder="Введи имя">
-        <input class="form-control m-3 w-50" id="patronymic" name="patronymic" type="text" placeholder="Введи отчество">
-        <input class="form-control m-3 w-50" id="login" name="login" type="text" placeholder="Введи логин">
-        <input class="form-control m-3 w-50" id="password" name="password" type="password" placeholder="Введи пароль">
-        <input class="form-control m-3 w-50" id="birth" name="birth" type="date" placeholder="Введи дату рождения" onchange="formatDate(this)">
-        <input class="form-control m-3 w-50" id="email" name="email" type="email" placeholder="Введи email">
-        <input class="form-control m-3 w-50" id="telephone" name="telephone" type="tel" placeholder="Введи телефон">
-        <button class="btn btn-dark m-3 w-50" @click="register">Создать аккаунт</button>
-        <button @click="linkpage('profile')" class="btn btn-dark m-3 w-50">Зарегистророваны? Войдите прямо сейчас</button>
-    </form>
+<section class="p-2" v-if="page === 'category'">
+    <h2>Товары категории {{ selectedCategory }}</h2>
+    <!-- Здесь добавьте код для вывода товаров выбранной категории -->
 </section>
 
 <section class="p-2" v-if="page === 'main'">
         <div style="display: flex;">
-            <a class="category2" :href="'http://anibloom/api/category/1'" style="font-size: 32px; text-decoration: none; display: flex; justify-content: center; width: 500px; border-radius: 10px; text-align: center; font-weight: 400; border: 1px solid white;">МАНГА</a>
-            <a class="category2" :href="'http://anibloom/api/category/2'" style="font-size: 32px; text-decoration: none; display: flex; justify-content: center; width: 500px; border-radius: 10px; text-align: center; font-weight: 400; border: 1px solid white;">КРУЖКИ</a>
-            <a class="category2" :href="'http://anibloom/api/category/3'" style="font-size: 32px; text-decoration: none; display: flex; justify-content: center; width: 500px; border-radius: 10px; text-align: center; font-weight: 400; border: 1px solid white;">ДАКИМАКУРЫ</a>
-            <a class="category2" :href="'http://anibloom/api/category/4'" style="font-size: 32px; text-decoration: none; display: flex; justify-content: center; width: 500px; border-radius: 10px; text-align: center; font-weight: 400; border: 1px solid white;">ЗНАЧКИ</a>
+            <button class="category2" @click="linkpage('Манга')" style="font-size: 32px; text-decoration: none; display: flex; justify-content: center; width: 500px; border-radius: 10px; text-align: center; font-weight: 400;">МАНГА</button>
+            <button class="category2" @click="linkpage('Кружки')" style="font-size: 32px; text-decoration: none; display: flex; justify-content: center; width: 500px; border-radius: 10px; text-align: center; font-weight: 400;">КРУЖКИ</button>
+            <button class="category2" @click="linkpage('Дакимакуры')" style="font-size: 32px; text-decoration: none; display: flex; justify-content: center; width: 500px; border-radius: 10px; text-align: center; font-weight: 400;">ДАКИМАКУРЫ</button>
+            <button class="category2" @click="linkpage('Значки')" style="font-size: 32px; text-decoration: none; display: flex; justify-content: center; width: 500px; border-radius: 10px; text-align: center; font-weight: 400;">ЗНАЧКИ</button>
         </div>
         <h2 style="width: 540px; display: flex; justify-content: center; text-align: center; padding-top: 30px; margin: 0 auto; font-weight: 700">Интернет-магазин аниме товаров «Anibloom»</h2>
         <div v-for="category in categories" :key="category.id" style="margin-top: 10px;">
@@ -106,8 +73,9 @@
                 <div v-for="product in category.products" :key="product.id"  style="width: 279px; border:ridge 10px #F2364A; height: 485px;">
                     <div style="margin: 11px; display: flex; flex-direction: column;">
                         <img style="width: 250px; height: 272px;" :src="'/storage/' + product.photo" alt="{{product.name}}">
-                        <strong style="text-align: center; margin-top: 13px; color: #333333; height:25px; font-size: 16px; font-weight: 600;">{{ product.name }}</strong>
-                        <strong style="margin-top: 86px; color: #333333; font-size: 28px; font-weight: 800">{{ product.price }} руб</strong>
+                        <strong style="text-align: center; margin-top: 13px; color: #333333; overflow: hidden; white-space: nowrap; height: 25px; font-size: 16px; -webkit-line-clamp: 1; text-overflow: ellipsis; font-weight: 600;">{{ product.name }}</strong>
+                        <strong style="display: -webkit-box; text-align: justify; color: #333333; overflow: hidden; height:75px; font-size: 12px; font-weight: 600; -webkit-line-clamp: 4; -webkit-box-orient: vertical; text-overflow: ellipsis;">{{ product.description }}</strong>
+                        <strong style="color: #333333; margin-top: 10px; font-size: 28px; font-weight: 800">{{ product.price }} руб</strong>
                         <button style="margin: 0 auto; background: #F2364A; border: white 2px solid; border-radius: 10px; width: 235px; height: 40px; color: white; font-size: 16px;" @click="addToCart(product.id)">В корзину</button>
                     </div>
                 </div>

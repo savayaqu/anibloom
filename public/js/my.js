@@ -42,6 +42,7 @@ let app = {
             products: [],
             user: [],
             cartItems: [],
+            selectedCategory: '',
         }
     },
     // Компоненты
@@ -53,6 +54,10 @@ let app = {
     methods: {
         linkpage(link) {
             this.page = link;
+        },
+        selectCategory(category) {
+            this.selectedCategory = category;
+            this.page = 'category';
         },
         getCategoriesAndProducts() {
             fetch('/api/categories', {

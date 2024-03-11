@@ -46,7 +46,7 @@ Route::middleware('auth:api')->post('/product/{id}', [CartController::class, 'ad
 Route::middleware('auth:api')->get('/cart', [CartController::class, 'index']);
     //Оформление заказа
 Route::middleware('auth:api')->post('/checkout', [OrderController::class, 'checkout']);
-    //Оставление отзыва для определнного товара
+    //Оставление отзыва для определённого товара
 Route::middleware('auth:api')->post('/product/{id}/review', [ReviewController::class, 'store']);
     //Редактирование корзины
 Route::middleware('auth:api')->patch('/cart', [CartController::class, 'update']);

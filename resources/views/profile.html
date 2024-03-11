@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Профиль</title>
+    <link rel="stylesheet" href="/public/css/bootstrap.css">
+    <link rel="stylesheet" href="/public/css/my.css">
+    <link rel="stylesheet" href="/public/css/profile.css">
+    <script defer src="/public/js/vue.3.4.21.global.js"></script>
+    <script defer src="/public/js/my.js"></script>
+</head>
+<body id="app">
+<section class="p-2" v-if="page === 'main'">
+    <div v-if="getCookie('api_token')">
+        <h2>Профиль пользователя</h2>
+        <h3>Режим редактирования</h3>
+        <form class="form-control" @submit.prevent>
+            <input class="form-control m-3 w-50" id="surnameP" name="surnameP" type="text" placeholder="Введи фамилия" v-model="user.surname">
+            <input class="form-control m-3 w-50" id="nameP" name="nameP" type="text" placeholder="Введи имя" v-model="user.name">
+            <input class="form-control m-3 w-50" id="patronymicP" name="patronymicP" type="text" placeholder="Введи отчество" v-model="user.patronymic">
+            <input class="form-control m-3 w-50" id="loginP" name="loginP" type="text" placeholder="Введи логин" v-model="user.login">
+            <input class="form-control m-3 w-50" id="passwordP" name="passwordP" type="text" placeholder="Введи пароль" v-model="user.password">
+            <input class="form-control m-3 w-50" id="birthP" name="birthP" type="date" placeholder="Введи дату рождения" onchange="formatDate(this)" v-model="user.birth">
+            <input class="form-control m-3 w-50" id="emailP" name="emailP" type="email" placeholder="Введи email" v-model="user.email">
+            <input class="form-control m-3 w-50" id="telephoneP" name="telephoneP" type="tel" placeholder="Введи телефон" v-model="user.telephone">
+            <button class="btn btn-dark m-3 w-50" @click="updateProfile">Сохранить изменения</button>
+        </form>
+    </div>
+    <div v-if="!getCookie('api_token')">
+        <h2>Авторизация</h2>
+        <form class="form-control" @submit.prevent>
+            <input class="form-control m-3 w-50" type="text" id="loginAuth" name="loginAuth" placeholder="Введи логин">
+            <input class="form-control m-3 w-50" type="password" id="passwordAuth" name="passwordAuth" placeholder="Введи пароль">
+            <button class="btn btn-dark m-3 w-50" @click="login">Вход</button>
+
+            <button @click="linkpage('reg')" class="btn btn-dark m-3 w-50">Не загестрированы? Зарегистрируйтесь!</button>
+        </form>
+    </div>
+</section>
+<section v-if="page === 'reg'">
+    <h2>Регистрация</h2>
+    <form class="form-control" @submit.prevent>
+        <input class="form-control m-3 w-50" id="surname" name="surname" type="text" placeholder="Введи фамилия">
+        <input class="form-control m-3 w-50" id="name" name="name" type="text" placeholder="Введи имя">
+        <input class="form-control m-3 w-50" id="patronymic" name="patronymic" type="text" placeholder="Введи отчество">
+        <input class="form-control m-3 w-50" id="login" name="login" type="text" placeholder="Введи логин">
+        <input class="form-control m-3 w-50" id="password" name="password" type="password" placeholder="Введи пароль">
+        <input class="form-control m-3 w-50" id="birth" name="birth" type="date" placeholder="Введи дату рождения" onchange="formatDate(this)">
+        <input class="form-control m-3 w-50" id="email" name="email" type="email" placeholder="Введи email">
+        <input class="form-control m-3 w-50" id="telephone" name="telephone" type="tel" placeholder="Введи телефон">
+        <button class="btn btn-dark m-3 w-50" @click="register">Создать аккаунт</button>
+        <button @click="linkpage('main')" class="btn btn-dark m-3 w-50">Зарегистророваны? Войдите прямо сейчас</button>
+    </form>
+</section>
+</body>
+</html>
