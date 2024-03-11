@@ -31,17 +31,5 @@ class UserController extends Controller
             'data' => $user,
         ]);
     }
-    public function updateProfile(UserUpdateRequest $request) {
-        // Получаем текущего аутентифицированного пользователя
-        $user = auth()->user();
-
-        //Обновляем данные
-        $user->fill($request->all());
-
-        // Сохраняем обновленные данные профиля пользователя
-        $user->save();
-
-        return response()->json(['message' => 'Профиль успешно обновлен'], 200);
-    }
 
 }

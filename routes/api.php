@@ -37,9 +37,9 @@ Route::get('/product/{id}' , [ProductController::class, 'show']);
 
 //Функционал авторизированного пользователя
     //Выход
-Route::middleware('auth:api')->get ('/logout', [AuthController::class, 'logout']);
+Route::middleware('auth:api')->get('/logout', [AuthController::class, 'logout']);
     //Просмотр своего профиля
-Route::middleware('auth:api')->get ('/profile', [UserController::class, 'this']);
+Route::middleware('auth:api')->get('/profile', [UserController::class, 'this']);
     //Добавление товара в корзину
 Route::middleware('auth:api')->post('/product/{id}', [CartController::class, 'addToCart']);
     //Просмотр своей корзины
@@ -52,8 +52,6 @@ Route::middleware('auth:api')->post('/product/{id}/review', [ReviewController::c
 Route::middleware('auth:api')->patch('/cart', [CartController::class, 'update']);
     //Редактирование отзыва
 Route::middleware('auth:api')->patch('/product/{id}/review', [ReviewController::class, 'update']);
-    //Редактирование своего профиля
-Route::middleware('auth:api')->patch('/profile', [UserController::class, 'updateProfile']);
     //Удаление отзыва
 Route::middleware('auth:api')->delete('/product/{id}/review', [ReviewController::class, 'delete']);
 

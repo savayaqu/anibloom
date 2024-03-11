@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Профиль</title>
+    <script defer src="/public/js/vue.3.4.21.global.js"></script>
+    <link rel="stylesheet" href="/public/css/bootstrap.css">
+    <script defer src="/public/js/my.js"></script>
+</head>
+<body id="body">
+<div id="profile">
+    <div id="auth">
+        <h2>Авторизация</h2>
+        <form class="form-control">
+            <input class="form-control m-3 w-50" type="text" id="loginAuth" name="loginAuth" placeholder="Введи логин">
+            <input class="form-control m-3 w-50" type="password" id="passwordAuth" name="passwordAuth" placeholder="Введи пароль">
+            <button class="btn btn-dark m-3 w-50" @click.prevent="login">Вход</button>
+            <button @click="linkpage('reg')" class="btn btn-dark m-3 w-50">Регистрация</button>
+        </form>
+    </div>
+</div>
+<vue-footer></vue-footer>
+</body>
+</body>
+</html>

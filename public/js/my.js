@@ -1,22 +1,62 @@
-// Компоненты
-const Card = {
+const VueHeader = {
     template: `
-        <div class="card" style="width: 250px">
-            <div class="card-header">Товар 1</div>
-            <div class="card-body">Тут типо фото</div>
-            <div class="card-footer">Цена: тебе не по карману</div>
-        </div>
+        <header>
+    <nav class="nav" style="display: flex;align-items: center; gap: 30px; justify-content: space-around">
+        <a class="li" href="/" ><img src="/public/images/logo.png" style="width: 120px; height: 120px;" alt="Логотип"></a>
+        <input style="background: #F7F7F7;border-radius: 10px; border: black; color: #808080; width: 500px; height: 50px;" placeholder="Поиск" >
+        <a class="li" href="/profile"><img src="/public/images/user.png" alt="profile" style="height: 30px; width: 30px"></a>
+        <a class="li" href="/cart"><img src="/public/images/cart.png" alt="cart" style="height: 30px; width: 30px"></a>
+    </nav>
+</header>
     `
 }
-const SpisokFu = {
+const VueFooter = {
     template: `
-        <ul> Список двоечников
-            <li>Кинсфатор Дмитрий</li>
-            <li>Огинский Иван</li>
-        </ul>
+    <footer style="height: 300px; padding-top: 100px">
+    <div style="display: flex; justify-content: space-between">
+        <div style="display: flex; flex-direction: column; justify-content: space-between">
+            <div style="display: flex; justify-content: flex-start">
+                <div style="display: flex; flex-direction: column">
+                    <a class="line-height" style="color: #333333; text-decoration: none;" href="#">Контакты</a>
+                    <a class="line-height" style="color: #333333; text-decoration: none;" href="#">Доставка и оплата</a>
+                    <a class="line-height" style="color: #333333; text-decoration: none;" href="#">Профиль</a>
+                </div>
+                <div style="display: flex; flex-direction: column">
+                    <a class="line-height" style="color: #333333; text-decoration: none;" href="#">Политика конфиденциальности и оферта</a>
+                    <a class="line-height" style="color: #333333; text-decoration: none;" href="#">Пользовательское соглашение</a>
+                    <a class="line-height" style="color: #333333; text-decoration: none;" href="#">Обратная связь</a>
+                </div>
+            </div>
+            <div>
+                <p style="color: #333333; margin: 10px 10px 0 0;">&copy; 2024 Любое использование контента без письменного разрешения запрещено</p>
+            </div>
+        </div>
+        <div>
+            <div>
+                <p style="font-weight: 700">Мы в соц. сетях</p>
+                <div style="display: flex; gap: 10px;">
+                    <a href="#"><img src="/public/images/TT.png" alt="ТикТок"></a>
+                    <a href="#"><img src="/public/images/VK.png" alt="ВК"></a>
+                </div>
+            </div>
+                <div style="margin-top: 40px;">
+                    <p style="font-weight: bold; font-size: 21px;">+7 (953) 801-50-82</p>
+                    <p style="margin-top: -15px;">Филиал Новосибирск (с 11:00 до 20:00)</p>
+                    <p style="font-weight: bold; font-size: 21px;">+7 (923) 181-74-43</p>
+                </div>
+                <div style="display: flex; gap: 10px; margin-top: 35px;">
+                    <img style="width: 39px; height: 24px;" src="/public/images/MasterCard.png" alt="MasterCard">
+                    <img style="width: 56px; height: 18px; margin-top: 3px;" src="/public/images/Visa.png" alt="Visa">
+                    <img style="width: 61px; height: 18px; margin-top: 3px;" src="/public/images/Mir.png" alt="Мир">
+                </div>
+        </div>
+    </div>
+</footer>
     `
 }
 
+
+// Функция изменения формата даты
 function formatDate(input) {
     // Получаем введенную дату
     let date = new Date(input.value);
@@ -29,96 +69,51 @@ function formatDate(input) {
 }
 
 // Функция для получения значения куки по имени
+function getCookie(name) {
+    const value = `; ${document.cookie}`;
+    const parts = value.split(`; ${name}=`);
+    if (parts.length === 2) return parts.pop().split(';').shift();
+}
 
-
-// Конфигурация приложения
-let app = {
-    // Раздел с переменными
+//Конфигурация body (footer и header)
+let body = {
     data() {
         return {
-            message: 'Привет, ку',
-            page: 'main',
-            categories: [],
-            products: [],
-            user: [],
-            cartItems: [],
         }
     },
-    // Компоненты
     components: {
-        Card,       // <card></card>
-        SpisokFu,   // <spisok-fu></spisok-fu>
+        VueHeader,
+        VueFooter,
     },
-    // Методы
     methods: {
-        linkpage(link) {
-            this.page = link;
-        },
-        getCategoriesAndProducts() {
-            fetch('/api/categories', {
-                method: 'GET',
-            })
-                .then(response => response.json())
-                .then(data => {
-                    this.categories = data.data; // Обращаемся к массиву категорий в объекте data
-                    // Для каждой категории получаем первые 3 продукта
-                    this.categories.forEach(category => {
-                        fetch(`/api/category/${category.id}`, {
-                            method: 'GET',
-                        })
-                            .then(response => response.json())
-                            .then(productsData => {
-                                // Добавляем только первые 3 продукта категории
-                                category.products = productsData.data.slice(0, 3);
-                            })
-                            .catch(error => {
-                                console.error('Error fetching products:', error);
-                            });
-                    });
-                })
-                .catch(error => {
-                    console.error('Error fetching categories:', error);
-                });
-        },
-        // Добавляем метод для отправки формы авторизации
-        login() {
-            // Получаем данные из формы
-            let login = document.getElementById('loginAuth').value;
-            let password = document.getElementById('passwordAuth').value;
+    }
+}
+let BodyApp =Vue.createApp(body).mount('#body')
 
-            // Отправляем запрос на сервер
-            fetch('/api/login', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ login: login, password: password }),
-            })
-                .then(response => {
-                    if (response.ok) {
-                        // Получаем токен из ответа
-                        return response.json();
-                    } else {
-                        throw new Error('Ошибка аутентификации');
-                    }
-                })
-                .then(data => {
-                    // Устанавливаем токен в куки
-                    document.cookie = `api_token=${data.data.user_token}; expires=${new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toUTCString()}; path=/`;
 
-                    // Редирект на главную страницу
-                    window.location.href = '/';
-                })
-                .catch(error => {
-                    // Обработка ошибки
-                    console.error('Ошибка:', error);
-                });
-        },
+//Конфигурация profile
+let profile = {
+    data() {
+        return {
+            user: [],
+        }
+    },
+    methods: {
+        // Функция для получения значения куки по имени
         getCookie(name) {
             const value = `; ${document.cookie}`;
             const parts = value.split(`; ${name}=`);
             if (parts.length === 2) return parts.pop().split(';').shift();
         },
+        // Добавляем метод для отправки формы авторизации
+        login() {
+            let login = document.getElementById('loginAuth').value;
+            let password = document.getElementById('passwordAuth').value;
+
+            // Пример отправки запроса на сервер
+            console.log('Отправка запроса на сервер:', login, password);
+        },
+        //Метод регистрации
         register() {
             // Получаем данные из формы
             let surname = document.getElementById('surname').value;
@@ -196,54 +191,87 @@ let app = {
                 console.error('Cookie с токеном отсутствует');
             }
         },
-        // Функция для обновления профиля пользователя
-        updateProfile() {
-            // Получаем данные из полей формы
-            const surname = document.getElementById('surnameP').value;
-            const name = document.getElementById('nameP').value;
-            const patronymic = document.getElementById('patronymicP').value;
-            const login = document.getElementById('loginP').value;
-            const password = document.getElementById('passwordP').value;
-            const birth = document.getElementById('birthP').value;
-            const email = document.getElementById('emailP').value;
-            const telephone = document.getElementById('telephoneP').value;
+    }
+}
+let VueProfile = Vue.createApp(profile).mount('#profile')
 
-            // Создаем объект с обновленными данными пользователя
-            const updatedData = {
-                surname: surname,
-                name: name,
-                patronymic: patronymic,
-                login: login,
-                password: password,
-                birth: birth,
-                email: email,
-                telephone: telephone
-            };
 
-            // Опции запроса
-            const options = {
-                method: 'PATCH',
+//Конфигурация cart
+let cart = {
+    data() {
+        return {
+            cartItems: [],
+        };
+    },
+    methods: {
+        loadCart() {
+            fetch('/api/cart', {
+                method: 'GET',
                 headers: {
-                    'Content-Type': 'application/json',
                     'Authorization': 'Bearer ' + this.getCookie('api_token')
-                },
-                body: JSON.stringify(updatedData)
-            };
-
-            // Отправляем запрос на сервер
-            fetch('/api/profile', options)
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error('Ошибка при обновлении профиля');
-                    }
-                    return response.json();
-                })
+                }
+            })
+                .then(response => response.json())
                 .then(data => {
-                    // Выводим сообщение об успешном обновлении профиля
-                    alert('Профиль успешно обновлен');
+                    this.cartItems = data.cart_items;
                 })
                 .catch(error => {
-                    console.error('Ошибка при обновлении профиля:', error);
+                    console.error('Error fetching cart:', error);
+                });
+        },
+
+    }
+};
+
+let VueCart = Vue.createApp(cart).mount('#cart');
+//VueCart.loadCart();
+
+/*
+// Конфигурация приложения
+//let app = {
+    // Раздел с переменными
+    data() {
+        return {
+            message: 'Привет, ку',
+            page: 'main',
+            categories: [],
+            products: [],
+            user: [],
+            cartItems: [],
+        }
+    },
+    // Компоненты
+    components: {
+    },
+    // Методы
+    methods: {
+        linkpage(link) {
+            this.page = link;
+        },
+        getCategoriesAndProducts() {
+            fetch('/api/categories', {
+                method: 'GET',
+            })
+                .then(response => response.json())
+                .then(data => {
+                    this.categories = data.data; // Обращаемся к массиву категорий в объекте data
+                    // Для каждой категории получаем первые 3 продукта
+                    this.categories.forEach(category => {
+                        fetch(`/api/category/${category.id}`, {
+                            method: 'GET',
+                        })
+                            .then(response => response.json())
+                            .then(productsData => {
+                                // Добавляем только первые 3 продукта категории
+                                category.products = productsData.data.slice(0, 3);
+                            })
+                            .catch(error => {
+                                console.error('Error fetching products:', error);
+                            });
+                    });
+                })
+                .catch(error => {
+                    console.error('Error fetching categories:', error);
                 });
         },
         // Функция для добавления товара в корзину
@@ -275,21 +303,7 @@ let app = {
                     console.error('Ошибка при добавлении товара в корзину:', error);
                 });
         },
-        loadCart() {
-            fetch('/api/cart', {
-                method: 'GET',
-                headers: {
-                    'Authorization': 'Bearer ' + this.getCookie('api_token')
-                }
-            })
-                .then(response => response.json())
-                .then(data => {
-                    this.cartItems = data.cart_items;
-                })
-                .catch(error => {
-                    console.error('Error fetching cart:', error);
-                });
-        }
+
 
 
 
@@ -297,10 +311,10 @@ let app = {
     }
 
 }
-let VueApp = Vue.createApp(app).mount('#app');
-VueApp.loadUserData();
-VueApp.loadCart();
-VueApp.getCategoriesAndProducts();
+//let VueApp = Vue.createApp(app).mount('#app');
+//VueApp.loadUserData();
+//VueApp.loadCart();
+//VueApp.getCategoriesAndProducts();
 
-
+*/
 
