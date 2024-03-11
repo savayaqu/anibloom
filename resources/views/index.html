@@ -28,10 +28,18 @@
 <section class="p-2" v-if="page === 'profile'">
     <div v-if="getCookie('api_token')">
         <h2>Профиль пользователя</h2>
-        <p><strong>Имя:</strong> {{ user.name }}</p>
-        <p><strong>Email:</strong> {{ user.email }}</p>
-        <p><strong>Телефон:</strong> {{ user.telephone }}</p>
-        <!-- Добавьте другие поля профиля, если необходимо -->
+        <h3>Режим редактирования</h3>
+        <form class="form-control" @submit.prevent>
+            <input class="form-control m-3 w-50" id="surnameP" name="surnameP" type="text" placeholder="Введи фамилия" v-model="user.surname">
+            <input class="form-control m-3 w-50" id="nameP" name="nameP" type="text" placeholder="Введи имя" v-model="user.name">
+            <input class="form-control m-3 w-50" id="patronymicP" name="patronymicP" type="text" placeholder="Введи отчество" v-model="user.patronymic">
+            <input class="form-control m-3 w-50" id="loginP" name="loginP" type="text" placeholder="Введи логин" v-model="user.login">
+            <input class="form-control m-3 w-50" id="passwordP" name="passwordP" type="text" placeholder="Введи пароль" v-model="user.password">
+            <input class="form-control m-3 w-50" id="birthP" name="birthP" type="date" placeholder="Введи дату рождения" onchange="formatDate(this)" v-model="user.birth">
+            <input class="form-control m-3 w-50" id="emailP" name="emailP" type="email" placeholder="Введи email" v-model="user.email">
+            <input class="form-control m-3 w-50" id="telephoneP" name="telephoneP" type="tel" placeholder="Введи телефон" v-model="user.telephone">
+            <button class="btn btn-dark m-3 w-50" @click="updateProfile">Сохранить изменения</button>
+        </form>
     </div>
     <div v-if="!getCookie('api_token')">
         <h2>Авторизация</h2>
@@ -44,6 +52,27 @@
         </form>
     </div>
 </section>
+
+<section v-if="page === 'cart'">
+    <h2>Корзина</h2>
+    <div v-if="cartItems.length === 0">
+        <p>Ваша корзина пуста</p>
+    </div>
+    <div v-else>
+        <div v-for="item in cartItems" :key="item.id">
+            <h3>{{ item.name }}</h3>
+            <img :src="item.photo" alt="Product Image">
+            <p>Цена: {{ item.price }} руб.</p>
+            <p>Количество: {{ item.quantity }}</p>
+        </div>
+    </div>
+</section>
+
+
+
+
+
+
 
 <section v-if="page === 'reg'">
     <h2>Регистрация</h2>
@@ -79,7 +108,7 @@
                         <img style="width: 250px; height: 272px;" :src="'/storage/' + product.photo" alt="{{product.name}}">
                         <strong style="text-align: center; margin-top: 13px; color: #333333; height:25px; font-size: 16px; font-weight: 600;">{{ product.name }}</strong>
                         <strong style="margin-top: 86px; color: #333333; font-size: 28px; font-weight: 800">{{ product.price }} руб</strong>
-                        <button style="margin: 0 auto; background: #F2364A; border: white 2px solid; border-radius: 10px; width: 235px; height: 40px; color: white; font-size: 16px;">В корзину</button>
+                        <button style="margin: 0 auto; background: #F2364A; border: white 2px solid; border-radius: 10px; width: 235px; height: 40px; color: white; font-size: 16px;" @click="addToCart(product.id)">В корзину</button>
                     </div>
                 </div>
             </div>

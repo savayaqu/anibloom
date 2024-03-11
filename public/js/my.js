@@ -41,6 +41,7 @@ let app = {
             categories: [],
             products: [],
             user: [],
+            cartItems: [],
         }
     },
     // Компоненты
@@ -163,16 +164,11 @@ let app = {
         },
         // Загрузка данных пользователя
         loadUserData() {
-            // Получаем все cookie
-            const cookies = document.cookie.split(';').map(cookie => cookie.trim());
-            // Находим cookie с именем 'api_token'
-            const apiTokenCookie = cookies.find(cookie => cookie.startsWith('api_token='));
+            // Получаем значение токена из куки
+            const token = this.getCookie('api_token');
 
-            // Если cookie с токеном найден
-            if (apiTokenCookie) {
-                // Извлекаем значение токена из cookie
-                const token = apiTokenCookie.split('=')[1];
-
+            // Если токен найден
+            if (token) {
                 // Опции запроса
                 const options = {
                     method: 'GET',
@@ -199,12 +195,111 @@ let app = {
             } else {
                 console.error('Cookie с токеном отсутствует');
             }
+        },
+        // Функция для обновления профиля пользователя
+        updateProfile() {
+            // Получаем данные из полей формы
+            const surname = document.getElementById('surnameP').value;
+            const name = document.getElementById('nameP').value;
+            const patronymic = document.getElementById('patronymicP').value;
+            const login = document.getElementById('loginP').value;
+            const password = document.getElementById('passwordP').value;
+            const birth = document.getElementById('birthP').value;
+            const email = document.getElementById('emailP').value;
+            const telephone = document.getElementById('telephoneP').value;
+
+            // Создаем объект с обновленными данными пользователя
+            const updatedData = {
+                surname: surname,
+                name: name,
+                patronymic: patronymic,
+                login: login,
+                password: password,
+                birth: birth,
+                email: email,
+                telephone: telephone
+            };
+
+            // Опции запроса
+            const options = {
+                method: 'PATCH',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + this.getCookie('api_token')
+                },
+                body: JSON.stringify(updatedData)
+            };
+
+            // Отправляем запрос на сервер
+            fetch('/api/profile', options)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Ошибка при обновлении профиля');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    // Выводим сообщение об успешном обновлении профиля
+                    alert('Профиль успешно обновлен');
+                })
+                .catch(error => {
+                    console.error('Ошибка при обновлении профиля:', error);
+                });
+        },
+        // Функция для добавления товара в корзину
+        addToCart(productId) {
+            // Опции запроса
+            const options = {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + this.getCookie('api_token')
+                }
+            };
+
+            // Отправляем запрос на сервер
+            fetch(`/api/product/${productId}`, options)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Ошибка при добавлении товара в корзину');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    // Выводим сообщение об успешном добавлении товара в корзину
+                    console.log('Товар успешно добавлен в корзину:', data);
+                    alert('Товар успешно добавлен в корзину');
+                    // Дополнительные действия, если необходимо
+                })
+                .catch(error => {
+                    console.error('Ошибка при добавлении товара в корзину:', error);
+                });
+        },
+        loadCart() {
+            fetch('/api/cart', {
+                method: 'GET',
+                headers: {
+                    'Authorization': 'Bearer ' + this.getCookie('api_token')
+                }
+            })
+                .then(response => response.json())
+                .then(data => {
+                    this.cartItems = data.cart_items;
+                })
+                .catch(error => {
+                    console.error('Error fetching cart:', error);
+                });
         }
+
+
+
+
     }
 
 }
 let VueApp = Vue.createApp(app).mount('#app');
 VueApp.loadUserData();
+VueApp.loadCart();
 VueApp.getCategoriesAndProducts();
 
 
