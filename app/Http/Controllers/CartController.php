@@ -85,15 +85,26 @@ class CartController extends Controller
             return response()->json(['error' => 'Пользователь не авторизирован'], 401);
         }
 
-        // Создание нового элемента корзины и связывание с пользователем
-        $cartItem = new Cart([
-            'quantity' => $quantity,
-            'price' => $product->price * $quantity,
-            'product_id' => $product->id,
-        ]);
-        $user->cart()->save($cartItem);
+        // Проверяем, существует ли уже запись для этого товара в корзине пользователя
+        $existingCartItem = $user->cart()->where('product_id', $product->id)->first();
+
+        if ($existingCartItem) {
+            // Если запись уже существует, обновляем количество товара
+            $existingCartItem->quantity += $quantity;
+            $existingCartItem->price += $product->price * $quantity;
+            $existingCartItem->save();
+        } else {
+            // Создание нового элемента корзины и связывание с пользователем
+            $cartItem = new Cart([
+                'quantity' => $quantity,
+                'price' => $product->price * $quantity,
+                'product_id' => $product->id,
+            ]);
+            $user->cart()->save($cartItem);
+        }
 
         return response()->json(['message' => 'Продукт добавлен в корзину']);
     }
+
 
 }
