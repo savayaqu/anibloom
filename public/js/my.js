@@ -285,11 +285,24 @@ let app = {
                 .then(response => response.json())
                 .then(data => {
                     this.cartItems = data.cart_items;
+                    // Обработка каждого элемента корзины
+                    this.cartItems.forEach(cartItem => {
+                        fetch(`/api/product/${cartItem.product_id}`)
+                            .then(response => response.json())
+                            .then(productData => {
+                                // Добавляем данные о продукте в объект корзины
+                                cartItem.product = productData.data;
+                            })
+                            .catch(error => {
+                                console.error('Error fetching product:', error);
+                            });
+                    });
                 })
                 .catch(error => {
                     console.error('Error fetching cart:', error);
                 });
         }
+
 
 
 

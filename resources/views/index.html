@@ -60,13 +60,16 @@
     </div>
     <div v-else>
         <div v-for="item in cartItems" :key="item.id">
-            <h3>{{ item.name }}</h3>
-            <img :src="item.photo" alt="Product Image">
+            <div v-if="item.product"> <!-- Проверяем, что данные о продукте доступны -->
+                <p>{{ item.product.name }}</p>
+                <img style="width: 250px; height: 272px;" :src="'/storage/' + item.product.photo" :alt="item.product.name">
+            </div>
             <p>Цена: {{ item.price }} руб.</p>
             <p>Количество: {{ item.quantity }}</p>
         </div>
     </div>
 </section>
+
 
 
 
