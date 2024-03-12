@@ -256,6 +256,7 @@ let app = {
                 .then(data => {
                     // Выводим сообщение об успешном обновлении профиля
                     alert('Профиль успешно обновлен');
+                    this.page = 'profile';
                 })
                 .catch(error => {
                     console.error('Ошибка при обновлении профиля:', error);
@@ -276,7 +277,7 @@ let app = {
             fetch(`/api/product/${productId}`, options)
                 .then(response => {
                     if (!response.ok) {
-                        throw new Error('Ошибка при добавлении товара в корзину');
+                    alert("Добавление товара в корзину доступно только авторизированным пользователям");
                     }
                     return response.json();
                 })
@@ -291,6 +292,7 @@ let app = {
                 });
         },
         loadCart() {
+            this.page = 'cart';
             fetch('/api/cart', {
                 method: 'GET',
                 headers: {
@@ -327,7 +329,6 @@ let app = {
 }
 let VueApp = Vue.createApp(app).mount('#app');
 VueApp.loadUserData();
-VueApp.loadCart();
 VueApp.getCategoriesAndProducts();
 
 
