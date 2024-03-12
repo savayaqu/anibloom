@@ -1,21 +1,3 @@
-// Компоненты
-const Card = {
-    template: `
-        <div class="card" style="width: 250px">
-            <div class="card-header">Товар 1</div>
-            <div class="card-body">Тут типо фото</div>
-            <div class="card-footer">Цена: тебе не по карману</div>
-        </div>
-    `
-}
-const SpisokFu = {
-    template: `
-        <ul> Список двоечников
-            <li>Кинсфатор Дмитрий</li>
-            <li>Огинский Иван</li>
-        </ul>
-    `
-}
 
 function formatDate(input) {
     // Получаем введенную дату
@@ -46,19 +28,28 @@ let app = {
             totalPrice: {},
             payments: [],
             payment_id: {},
-
+            orders: [],
 
         }
-    },
-    // Компоненты
-    components: {
-        Card,       // <card></card>
-        SpisokFu,   // <spisok-fu></spisok-fu>
     },
     // Методы
     methods: {
         linkpage(link) {
-            this.page = link;
+            if(link === 'cart')
+            {
+                this.loadCart();
+                this.page = link;
+            }
+            else if(link === 'profile')
+            {
+                this.loadOrder();
+                this.page = link;
+            }
+            else
+            {
+                this.page = 'main';
+            }
+
         },
         getCategoriesAndProducts() {
             fetch('/api/categories', {
@@ -287,7 +278,6 @@ let app = {
                 })
                 .then(data => {
                     // Выводим сообщение об успешном добавлении товара в корзину
-                    console.log('Товар успешно добавлен в корзину:', data);
                     alert('Товар успешно добавлен в корзину');
                     // Дополнительные действия, если необходимо
                 })
@@ -296,7 +286,6 @@ let app = {
                 });
         },
         loadCart() {
-            this.page = 'cart';
             this.getPayment();
             fetch('/api/cart', {
                 method: 'GET',
@@ -419,6 +408,29 @@ let app = {
             })
                 .then(response => {
                     alert("Заказ принят");
+                    this.loadCart();
+                })
+                .catch(error => {
+                    console.error('Ошибка: ', error);
+                });
+            //Сразу вывод заказа, чтобы не обновлять страницу
+            this.loadOrder();
+        },
+        //Просмотр заказов текущего пользователя
+        loadOrder() {
+            // Отправляем запрос на сервер
+            fetch('/api/orders', {
+                method: 'GET',
+                headers: {
+                    'Authorization': 'Bearer ' + this.getCookie('api_token'),
+                },
+            })
+                .then(response => response.json())
+                .then(data => {
+                    this.orders = data.data;
+                    console.log(data.data);
+                })
+                .then(response => {
                     this.loadCart();
                 })
                 .catch(error => {

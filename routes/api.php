@@ -38,9 +38,9 @@ Route::get('/payment', [OrderController::class, 'payment']);
 
 //Функционал авторизированного пользователя
     //Выход
-Route::middleware('auth:api')->get ('/logout', [AuthController::class, 'logout']);
+Route::middleware('auth:api')->get('/logout', [AuthController::class, 'logout']);
     //Просмотр своего профиля
-Route::middleware('auth:api')->get ('/profile', [UserController::class, 'this']);
+Route::middleware('auth:api')->get('/profile', [UserController::class, 'this']);
     //Добавление товара в корзину
 Route::middleware('auth:api')->post('/product/{id}', [CartController::class, 'addToCart']);
     //Просмотр своей корзины
@@ -59,8 +59,8 @@ Route::middleware('auth:api')->patch('/profile', [UserController::class, 'update
 Route::middleware('auth:api')->delete('/product/{id}/review', [ReviewController::class, 'delete']);
     //Удаление товара из корзины
 Route::middleware('auth:api')->delete('/cart/product/{id}', [CartController::class, 'delete']);
-
-
+    //Просмотр заказов
+Route::middleware('auth:api')->get('/orders', [OrderController::class, 'index']);
 
 //Функционал администратора
     //Создание категории

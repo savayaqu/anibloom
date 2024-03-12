@@ -19,7 +19,7 @@
         <p class="li" @click="linkpage('main')"><img src="/public/images/logo.png" style="width: 120px; height: 120px;" alt="Логотип"></p>
         <input style="background: #F7F7F7;border-radius: 10px; border: black; color: #808080; width: 750px; height: 50px;" placeholder="Поиск" >
         <p class="li" @click="linkpage('profile')"><img src="/public/images/user.png" alt="profile" style="height: 30px; width: 30px"></p>
-        <p class="li" @click="loadCart()"><img src="/public/images/cart.png" alt="cart" style="height: 30px; width: 30px"></p>
+        <p class="li" @click="linkpage('cart')"><img src="/public/images/cart.png" alt="cart" style="height: 30px; width: 30px"></p>
     </nav>
 </header>
 
@@ -30,6 +30,16 @@
     <div v-if="getCookie('api_token')">
         <b @click="linkpage('updateProfile')">Изменить пользовательные данные</b>
         <p>Текущие заказы: </p>
+        <div v-for="order in orders">
+            <p>Дата оформления заказа: {{order.dateOrder}}</p>
+            <p>Адрес доставки: {{order.address}}</p>
+            <p>Способ оплаты: {{order.payment_name}}</p>
+            <p>Статус заказа: {{order.status_name}}</p>
+            <p>Товары:</p>
+            <div>
+
+            </div>
+        </div>
     </div>
     <div v-if="!getCookie('api_token')">
         <h2>Авторизация</h2>
@@ -136,7 +146,9 @@
                         <img style="width: 250px; height: 272px;" :src="'/storage/' + product.photo" alt="{{product.name}}">
                         <strong style="text-align: center; margin-top: 13px; color: #333333; height:25px; font-size: 16px; font-weight: 600;">{{ product.name }}</strong>
                         <strong style="margin-top: 86px; color: #333333; font-size: 28px; font-weight: 800">{{ product.price }} руб</strong>
-                        <button style="margin: 0 auto; background: #F2364A; border: white 2px solid; border-radius: 10px; width: 235px; height: 40px; color: white; font-size: 16px;" @click="addToCart(product.id)">В корзину</button>
+                        <!-- Добавляем проверку на количество товара -->
+                        <button v-if="product.quantity > 0" style="margin: 0 auto; background: #F2364A; border: white 2px solid; border-radius: 10px; width: 235px; height: 40px; color: white; font-size: 16px;" @click="addToCart(product.id)">В корзину</button>
+                        <button v-else style="margin: 0 auto; background: lightgray; border: white 2px solid; border-radius: 10px; width: 235px; height: 40px; color: white; font-size: 16px;" disabled>Нет в наличии</button>
                     </div>
                 </div>
             </div>
@@ -168,7 +180,10 @@
             <h3>{{ product.name }}</h3>
             <img style="width: 250px; height: 272px;" :src="'/storage/' + product.photo" alt="{{product.name}}">
             <p>Цена: {{ product.price }} руб.</p>
-            <!-- Другая информация о товаре, если необходимо -->
+            <!-- Добавляем проверку на количество товара -->
+            <button v-if="product.quantity > 0" style="margin: 0 auto; background: #F2364A; border: white 2px solid; border-radius: 10px; width: 235px; height: 40px; color: white; font-size: 16px;" @click="addToCart(product.id)">В корзину</button>
+            <button v-else style="margin: 0 auto; background: lightgray; border: white 2px solid; border-radius: 10px; width: 235px; height: 40px; color: white; font-size: 16px;" disabled>Нет в наличии</button>
+
         </div>
     </div>
 </section>

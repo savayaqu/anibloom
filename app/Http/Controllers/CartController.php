@@ -22,11 +22,12 @@ class CartController extends Controller
         foreach ($cartItems as $item) {
             $totalPrice += $item->product->price * $item->quantity;
         }
-
+        // Форматирование общей цены
+        $formattedTotalPrice = number_format($totalPrice, 2, '.', '');
         // Возвращаем JSON-ответ с содержимым корзины и общей стоимостью
         return response()->json([
             'cart_items' => $cartItems,
-            'total' => $totalPrice
+            'total' => $formattedTotalPrice
         ]);
     }
 

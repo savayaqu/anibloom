@@ -81,5 +81,21 @@ class OrderController extends Controller
            'data' => $payment
         ]);
     }
+    public function index()
+    {
+        // Получаем данные пользователя
+        $user = Auth::user();
+
+        $orders = Order::where('user_id', $user->id)->get();
+
+        // Добавляем связанные модели для payment и status
+        $orders->each(function ($order) {
+            $order->payment_name = $order->payment->name;
+            $order->status_name = $order->status->name;
+        });
+
+        return response()->json(['data' => $orders]);
+    }
+
 
 }
