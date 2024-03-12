@@ -56,6 +56,8 @@ Route::middleware('auth:api')->patch('/product/{id}/review', [ReviewController::
 Route::middleware('auth:api')->patch('/profile', [UserController::class, 'updateProfile']);
     //Удаление отзыва
 Route::middleware('auth:api')->delete('/product/{id}/review', [ReviewController::class, 'delete']);
+    //Удаление товара из корзины
+Route::middleware('auth:api')->delete('/cart/product/{id}', [CartController::class, 'delete']);
 
 
 

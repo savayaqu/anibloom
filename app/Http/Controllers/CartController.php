@@ -25,7 +25,6 @@ class CartController extends Controller
     {
         // Получаем текущего пользователя
         $user = auth()->user();
-
         // Получаем product_id и новое количество товара из запроса
         $productId = $request->input('product_id');
         $newQuantity = $request->input('quantity');
@@ -35,13 +34,19 @@ class CartController extends Controller
             ->where('product_id', $productId)
             ->first();
 
+        $product = Product::find($productId);
+        // Проверка на существование товара
+
+        // Получение доступного количества товара из базы данных
+        $availableQuantity = $product->quantity;
+
         // Проверяем, найден ли товар в корзине
         if (!$cartItem) {
             throw new ApiException(404, 'Товар не найден в вашей корзине');
         }
 
-        // Проверяем, чтобы новое количество было положительным числом
-        if ($newQuantity > 0) {
+        // Проверяем, чтобы новое количество было положительным числом и не было больше того, что в хранится в БД
+        if ($newQuantity > 0 && $newQuantity < $availableQuantity) {
             // Обновляем количество товара
             $cartItem->quantity = $newQuantity;
             $cartItem->save();
@@ -105,6 +110,28 @@ class CartController extends Controller
 
         return response()->json(['message' => 'Продукт добавлен в корзину']);
     }
+    public function delete(Request $request, int $id)
+    {
+        // Получаем текущего пользователя
+        $user = auth()->user();
+
+        // Находим товар в корзине текущего пользователя по id
+        $cartItem = Cart::where('user_id', $user->id)
+            ->where('product_id', $id)
+            ->first();
+
+        // Проверяем, найден ли товар в корзине
+        if (!$cartItem) {
+            throw new ApiException(404, 'Товар не найден в вашей корзине');
+        }
+
+        // Удаляем товар из корзины
+        $cartItem->delete();
+
+        // Возвращаем ответ с сообщением об успешном удалении товара из корзины
+        return response()->json(['message' => 'Товар успешно удален из корзины'], 200);
+    }
+
 
 
 }

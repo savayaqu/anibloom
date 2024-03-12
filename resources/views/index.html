@@ -65,13 +65,21 @@
         <p>Ваша корзина пуста</p>
     </div>
     <div v-else>
-        <div v-for="item in cartItems" :key="item.id">
-            <div v-if="item.product"> <!-- Проверяем, что данные о продукте доступны -->
-                <p>{{ item.product.name }}</p>
-                <img style="width: 250px; height: 272px;" :src="'/storage/' + item.product.photo" :alt="item.product.name">
+        <div v-for="item in cartItems" :key="item.id" style="padding-top: 30px">
+            <div v-if="item.product" style="display: flex; flex-direction: row; justify-content: flex-start; align-items: center; height: 100px;">
+                <img style="object-fit: cover; width: 100px; height: auto;" :src="'/storage/' + item.product.photo" :alt="item.product.name">
+                    <p style="width: 20%">{{ item.product.name }}</p>
+                    <p style="width: 20%">Цена: {{ item.price }} руб.</p>
+                    <!-- Выбор количества -->
+                    <select v-model="item.quantity" @change="updateQuantity(item)">
+                        <!-- Используем v-for для создания вариантов выбора количества -->
+                        <option v-for="quantity in availableQuantities(item)" :key="quantity" :value="quantity">{{ quantity }}</option>
+                    </select>
+                <div style="display: flex; justify-content: flex-end; width: 30%;">
+                    <!-- Добавляем изображение событию click -->
+                    <img style="height: 40px; width: 40px; cursor: pointer;" src="/public/images/trash.png" @click="deleteCartItem(item.product.id)">
+                </div>
             </div>
-            <p>Цена: {{ item.price }} руб.</p>
-            <p>Количество: {{ item.quantity }}</p>
         </div>
     </div>
 </section>

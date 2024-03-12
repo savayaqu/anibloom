@@ -318,9 +318,67 @@ let app = {
                 .catch(error => {
                     console.error('Error fetching cart:', error);
                 });
-        }
+        },
+        updateQuantity(item) {
+            const productId = item.product_id;
+            const newQuantity = item.quantity;
 
-
+            // Отправляем запрос на сервер для обновления количества товара в корзине
+            fetch('/api/cart', {
+                method: 'PATCH',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + this.getCookie('api_token')
+                },
+                body: JSON.stringify({
+                    product_id: productId,
+                    quantity: newQuantity
+                })
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Ошибка при обновлении количества товара в корзине');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    // Обработка успешного обновления количества товара в корзине
+                    console.log('Количество товара в корзине успешно обновлено');
+                })
+                .catch(error => {
+                    console.error('Ошибка при обновлении количества товара в корзине:', error);
+                });
+        },
+        availableQuantities(item) {
+            // Проверяем, доступен ли объект товара в элементе корзины
+            if (item.product) {
+                // Получаем количество товара из объекта товара
+                const productQuantity = item.product.quantity;
+                // Создаем массив чисел от 1 до доступного количества товара
+                return Array.from({ length: productQuantity }, (_, index) => index + 1);
+            } else {
+                return [];
+            }
+        },
+        deleteCartItem(itemId) {
+            // Отправляем запрос на удаление товара из корзины
+            fetch(`/api/cart/product/${itemId}`, {
+                method: 'DELETE',
+                headers: {
+                    'Authorization': 'Bearer ' + this.getCookie('api_token')
+                }
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Ошибка при удалении товара из корзины');
+                    }
+                    // Обновляем список товаров в корзине
+                    this.loadCart();
+                })
+                .catch(error => {
+                    console.error('Ошибка при удалении товара из корзины:', error);
+                });
+        },
 
 
 
