@@ -1,4 +1,3 @@
-
 function formatDate(input) {
     // Получаем введенную дату
     let date = new Date(input.value);
@@ -9,9 +8,6 @@ function formatDate(input) {
     // Устанавливаем новое значение в поле ввода
     input.value = formattedDate;
 }
-
-// Функция для получения значения куки по имени
-
 
 // Конфигурация приложения
 let app = {
@@ -29,6 +25,7 @@ let app = {
             payments: [],
             payment_id: {},
             orders: [],
+            product: {},
 
         }
     },
@@ -45,12 +42,31 @@ let app = {
                 this.loadOrder();
                 this.page = link;
             }
+            else if (link === 'product')
+            {
+                this.page = link;
+            }
             else
             {
                 this.page = 'main';
             }
 
         },
+        //Просмотр конкретного товара
+        getProduct(product_id) {
+          fetch(`/api/product/${product_id}`, {
+              method: 'GET',
+          })
+              .then(response => response.json())
+              .then(data => {
+                  this.product = data.data;
+                  this.linkpage('product');
+              })
+              .catch(error => {
+                  console.error('Ошика:', error);
+              });
+        },
+        //Получение первых 3 товаров определенной категории
         getCategoriesAndProducts() {
             fetch('/api/categories', {
                 method: 'GET',
@@ -77,6 +93,7 @@ let app = {
                     console.error('Error fetching categories:', error);
                 });
         },
+        //Загрузка всех товаров определенной категории
         loadCategoryProducts(categoryId, categoryName) {
             // Выполняем запрос к API для получения товаров определенной категории
             fetch(`/api/category/${categoryId}`)
@@ -124,11 +141,13 @@ let app = {
                     console.error('Ошибка:', error);
                 });
         },
+        //Получение куки
         getCookie(name) {
             const value = `; ${document.cookie}`;
             const parts = value.split(`; ${name}=`);
             if (parts.length === 2) return parts.pop().split(';').shift();
         },
+        //Регистрация
         register() {
             // Получаем данные из формы
             let surname = document.getElementById('surname').value;
@@ -285,6 +304,7 @@ let app = {
                     console.error('Ошибка при добавлении товара в корзину:', error);
                 });
         },
+        //Загрузка корзины
         loadCart() {
             this.getPayment();
             fetch('/api/cart', {
@@ -315,6 +335,7 @@ let app = {
                     console.error('Error fetching cart:', error);
                 });
         },
+        //Обновление количества товаров в корзине
         updateQuantity(item) {
             const productId = item.product_id;
             const newQuantity = item.quantity;
@@ -346,6 +367,7 @@ let app = {
                     console.error('Ошибка при обновлении количества товара в корзине:', error);
                 });
         },
+        //Узнаем текущее количество товара и выводим массивом чисел
         availableQuantities(item) {
             // Проверяем, доступен ли объект товара в элементе корзины
             if (item.product) {
@@ -357,6 +379,7 @@ let app = {
                 return [];
             }
         },
+        //Удаление товара в корзине
         deleteCartItem(itemId) {
             // Отправляем запрос на удаление товара из корзины
             fetch(`/api/cart/product/${itemId}`, {

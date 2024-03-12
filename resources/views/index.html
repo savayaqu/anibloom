@@ -143,8 +143,10 @@
             <div class="card-body" style="display: flex; justify-content: center; gap: 145px;">
                 <div v-for="product in category.products" :key="product.id"  style="width: 279px; border:ridge 10px #F2364A; height: 485px;">
                     <div style="margin: 11px; display: flex; flex-direction: column;">
-                        <img style="width: 250px; height: 272px;" :src="'/storage/' + product.photo" alt="{{product.name}}">
-                        <strong style="text-align: center; margin-top: 13px; color: #333333; height:25px; font-size: 16px; font-weight: 600;">{{ product.name }}</strong>
+                        <div @click="getProduct(product.id)">
+                            <img style="width: 250px; height: 272px;" :src="'/storage/' + product.photo" alt="{{product.name}}">
+                            <strong style="text-align: center; margin-top: 13px; color: #333333; height:25px; font-size: 16px; font-weight: 600;">{{ product.name }}</strong>
+                        </div>
                         <strong style="margin-top: 86px; color: #333333; font-size: 28px; font-weight: 800">{{ product.price }} руб</strong>
                         <!-- Добавляем проверку на количество товара -->
                         <button v-if="product.quantity > 0" style="margin: 0 auto; background: #F2364A; border: white 2px solid; border-radius: 10px; width: 235px; height: 40px; color: white; font-size: 16px;" @click="addToCart(product.id)">В корзину</button>
@@ -177,8 +179,10 @@
     </div>
     <div v-else>
         <div v-for="product in categoryProducts" :key="product.id">
-            <h3>{{ product.name }}</h3>
-            <img style="width: 250px; height: 272px;" :src="'/storage/' + product.photo" alt="{{product.name}}">
+            <div>
+                <h3>{{ product.name }}</h3>
+                <img style="width: 250px; height: 272px;" :src="'/storage/' + product.photo" alt="{{product.name}}">
+            </div>
             <p>Цена: {{ product.price }} руб.</p>
             <!-- Добавляем проверку на количество товара -->
             <button v-if="product.quantity > 0" style="margin: 0 auto; background: #F2364A; border: white 2px solid; border-radius: 10px; width: 235px; height: 40px; color: white; font-size: 16px;" @click="addToCart(product.id)">В корзину</button>
@@ -188,6 +192,15 @@
     </div>
 </section>
 
+<section v-if="page === 'product'">
+    <h3>{{product.name}}</h3>
+    <img style="width: 250px; height: 272px;" :src="'/storage/' + product.photo" alt="{{product.name}}">
+    <p>Описание товара <br> {{product.description}}</p>
+    <button v-if="product.quantity > 0" style="margin: 0 auto; background: #F2364A; border: white 2px solid; border-radius: 10px; width: 235px; height: 40px; color: white; font-size: 16px;" @click="addToCart(product.id)">В корзину</button>
+    <button v-else style="margin: 0 auto; background: lightgray; border: white 2px solid; border-radius: 10px; width: 235px; height: 40px; color: white; font-size: 16px;" disabled>Нет в наличии</button>
+    <br>
+    <b style="text-align: center">Отзывы о товаре:</b>
+</section>
 <footer style="height: 300px; padding-top: 100px">
     <div style="display: flex; justify-content: space-between">
         <div style="display: flex; flex-direction: column; justify-content: space-between">
