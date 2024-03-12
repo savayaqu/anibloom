@@ -36,12 +36,14 @@ let app = {
     // Раздел с переменными
     data() {
         return {
-            message: 'Привет, ку',
             page: 'main',
             categories: [],
             products: [],
             user: [],
             cartItems: [],
+            categoryProducts: [], // Массив для хранения товаров выбранной категории
+            selectedCategory: {}, // Выбранная категория
+
         }
     },
     // Компоненты
@@ -78,6 +80,19 @@ let app = {
                 })
                 .catch(error => {
                     console.error('Error fetching categories:', error);
+                });
+        },
+        loadCategoryProducts(categoryId, categoryName) {
+            // Выполняем запрос к API для получения товаров определенной категории
+            fetch(`/api/category/${categoryId}`)
+                .then(response => response.json())
+                .then(data => {
+                    this.categoryProducts = data.data; // Присваиваем полученные товары переменной categoryProducts
+                    this.selectedCategory = categoryName;
+                    this.page = 'products';
+                })
+                .catch(error => {
+                    console.error('Error fetching category products:', error);
                 });
         },
         // Добавляем метод для отправки формы авторизации
