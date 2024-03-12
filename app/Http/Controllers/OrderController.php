@@ -7,6 +7,7 @@ use App\Http\Requests\OrderCreateRequest;
 use App\Models\Cart;
 use App\Models\Compound;
 use App\Models\Order;
+use App\Models\Payment;
 use App\Models\Product;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
@@ -72,6 +73,13 @@ class OrderController extends Controller
 
         // Возвращаем ответ с сообщением об успешном оформлении заказа
         return response()->json(['message' => 'Заказ успешно оформлен'], 200);
+    }
+    public function payment()
+    {
+        $payment = Payment::all();
+        return response()->json([
+           'data' => $payment
+        ]);
     }
 
 }

@@ -42,6 +42,7 @@
         </form>
     </div>
 </section>
+
 <section v-if="page === 'updateProfile'">
     <h3>Режим редактирования профиля</h3>
     <form class="form-control" @submit.prevent>
@@ -56,6 +57,7 @@
         <button class="btn btn-dark m-3 w-50" @click="updateProfile">Сохранить изменения</button>
     </form>
 </section>
+
 <section v-if="page === 'cart'">
     <h2>Корзина</h2>
     <div v-if="!getCookie('api_token')">
@@ -66,21 +68,38 @@
     </div>
     <div v-else>
         <div v-for="item in cartItems" :key="item.id" style="padding-top: 30px">
-            <div v-if="item.product" style="display: flex; flex-direction: row; justify-content: flex-start; align-items: center; height: 100px;">
+            <div v-if="item.product" style="display: flex; flex-direction: row; justify-content: flex-start; align-items: center; height: 100px; column-gap: 30px">
                 <img style="object-fit: cover; width: 100px; height: auto;" :src="'/storage/' + item.product.photo" :alt="item.product.name">
-                    <p style="width: 20%">{{ item.product.name }}</p>
-                    <p style="width: 20%">Цена: {{ item.price }} руб.</p>
+                    <p>{{ item.product.name }}</p>
+                    <p>Цена: {{ item.price }} руб.</p>
                     <!-- Выбор количества -->
                     <select v-model="item.quantity" @change="updateQuantity(item)">
                         <!-- Используем v-for для создания вариантов выбора количества -->
                         <option v-for="quantity in availableQuantities(item)" :key="quantity" :value="quantity">{{ quantity }}</option>
                     </select>
-                <div style="display: flex; justify-content: flex-end; width: 30%;">
+                <div style="display: flex; justify-content: flex-end;">
                     <!-- Добавляем изображение событию click -->
                     <img style="height: 40px; width: 40px; cursor: pointer;" src="/public/images/trash.png" @click="deleteCartItem(item.product.id)">
                 </div>
             </div>
         </div>
+        <div style="text-align: center; width: 40%; display: flex; justify-content: space-around"><b>Общая стоимость: </b><b>{{totalPrice}}</b></div>
+        <section>
+            <div>
+                <h3>Адрес доставки</h3>
+                <input id="address" name="address" type="text">
+            </div>
+            <div>
+                <h3>Способ оплаты</h3>
+                <div style="display: flex; flex-direction: row; column-gap: 30px">
+                    <label v-for="payment in payments" style=" border: 1px solid black">
+                        <input @click="getPaymentId(payment.id)" type="radio" name="payment">
+                        <p>{{payment.name}}</p>
+                    </label>
+                </div>
+            </div>
+            <p  @click="checkout">оформить заказ</p>
+        </section>
     </div>
 </section>
 
@@ -89,14 +108,14 @@
 <section v-if="page === 'reg'">
     <h2>Регистрация</h2>
     <form class="form-control" @submit.prevent>
-        <input class="form-control m-3 w-50" id="surname" name="surname" type="text" placeholder="Введи фамилия">
-        <input class="form-control m-3 w-50" id="name" name="name" type="text" placeholder="Введи имя">
+        <input class="form-control m-3 w-50" required id="surname" name="surname" type="text" placeholder="Введи фамилия">
+        <input class="form-control m-3 w-50" required id="name" name="name" type="text" placeholder="Введи имя">
         <input class="form-control m-3 w-50" id="patronymic" name="patronymic" type="text" placeholder="Введи отчество">
-        <input class="form-control m-3 w-50" id="login" name="login" type="text" placeholder="Введи логин">
-        <input class="form-control m-3 w-50" id="password" name="password" type="password" placeholder="Введи пароль">
-        <input class="form-control m-3 w-50" id="birth" name="birth" type="date" placeholder="Введи дату рождения" onchange="formatDate(this)">
-        <input class="form-control m-3 w-50" id="email" name="email" type="email" placeholder="Введи email">
-        <input class="form-control m-3 w-50" id="telephone" name="telephone" type="tel" placeholder="Введи телефон">
+        <input class="form-control m-3 w-50" required id="login" name="login" type="text" placeholder="Введи логин">
+        <input class="form-control m-3 w-50" required id="password" name="password" type="password" placeholder="Введи пароль">
+        <input class="form-control m-3 w-50" required id="birth" name="birth" type="date" placeholder="Введи дату рождения" onchange="formatDate(this)">
+        <input class="form-control m-3 w-50" required id="email" name="email" type="email" placeholder="Введи email">
+        <input class="form-control m-3 w-50" required id="telephone" name="telephone" type="tel" placeholder="Введи телефон">
         <button class="btn btn-dark m-3 w-50" @click="register">Создать аккаунт</button>
         <button @click="linkpage('profile')" class="btn btn-dark m-3 w-50">Зарегистророваны? Войдите прямо сейчас</button>
     </form>
@@ -139,7 +158,6 @@
         </div>
     </section>
 
-<!-- Ваша разметка Vue компонента -->
 <section v-if="page === 'products'">
     <h2>Товары в категории "{{selectedCategory}}"</h2>
     <div v-if="categoryProducts.length === 0">
@@ -154,12 +172,6 @@
         </div>
     </div>
 </section>
-
-
-
-
-
-
 
 <footer style="height: 300px; padding-top: 100px">
     <div style="display: flex; justify-content: space-between">

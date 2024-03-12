@@ -32,7 +32,8 @@ Route::get('/categories' , [CategoryController::class, 'index']);
 Route::get('/category/{id}' , [ProductController::class, 'showMany']);
     //Просмотр конкретного товара
 Route::get('/product/{id}' , [ProductController::class, 'show']);
-
+    //Просмотр способов оплаты
+Route::get('/payment', [OrderController::class, 'payment']);
 
 
 //Функционал авторизированного пользователя

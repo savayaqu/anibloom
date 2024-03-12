@@ -43,6 +43,10 @@ let app = {
             cartItems: [],
             categoryProducts: [], // Массив для хранения товаров выбранной категории
             selectedCategory: {}, // Выбранная категория
+            totalPrice: {},
+            payments: [],
+            payment_id: {},
+
 
         }
     },
@@ -293,6 +297,7 @@ let app = {
         },
         loadCart() {
             this.page = 'cart';
+            this.getPayment();
             fetch('/api/cart', {
                 method: 'GET',
                 headers: {
@@ -302,7 +307,7 @@ let app = {
                 .then(response => response.json())
                 .then(data => {
                     this.cartItems = data.cart_items;
-                    console.log(data.cart_items);
+                    this.totalPrice = data.total;
                     // Обработка каждого элемента корзины
                     this.cartItems.forEach(cartItem => {
                         fetch(`/api/product/${cartItem.product_id}`)
@@ -380,6 +385,44 @@ let app = {
                 })
                 .catch(error => {
                     console.error('Ошибка при удалении товара из корзины:', error);
+                });
+        },
+        //Получение способов оплаты
+        getPayment() {
+            fetch('/api/payment', {
+                method: 'GET',
+            })
+                .then(response => response.json())
+                .then(data => {
+                    this.payments = data.data;
+                })
+        },
+        //Получение payment_id
+        getPaymentId(payment_id) {
+          this.payment_id = payment_id;
+        },
+        //Оформление заказа
+        checkout() {
+            // Получаем данные из формы
+            let address = document.getElementById('address').value;
+            // Отправляем запрос на сервер
+            fetch('/api/checkout', {
+                method: 'POST',
+                headers: {
+                    'Authorization': 'Bearer ' + this.getCookie('api_token'),
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    address: address,
+                    payment_id: this.payment_id
+                }),
+            })
+                .then(response => {
+                    alert("Заказ принят");
+                    this.loadCart();
+                })
+                .catch(error => {
+                    console.error('Ошибка: ', error);
                 });
         },
     }

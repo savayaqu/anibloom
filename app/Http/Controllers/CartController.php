@@ -17,9 +17,19 @@ class CartController extends Controller
         // Получаем корзину текущего пользователя
         $cartItems = $user->cart;
 
-        // Возвращаем представление с содержимым корзины
-        return response()->json(['cart_items' => $cartItems]);
+        // Вычисляем общую стоимость всех товаров в корзине
+        $totalPrice = 0;
+        foreach ($cartItems as $item) {
+            $totalPrice += $item->product->price * $item->quantity;
+        }
+
+        // Возвращаем JSON-ответ с содержимым корзины и общей стоимостью
+        return response()->json([
+            'cart_items' => $cartItems,
+            'total' => $totalPrice
+        ]);
     }
+
 
     public function update(Request $request)
     {
