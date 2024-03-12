@@ -45,11 +45,15 @@ class CartController extends Controller
             throw new ApiException(404, 'Товар не найден в вашей корзине');
         }
 
+        // Проверяем, существует ли уже запись для этого товара в корзине пользователя
+        $existingCartItem = $user->cart()->where('product_id', $product->id)->first();
+
         // Проверяем, чтобы новое количество было положительным числом и не было больше того, что в хранится в БД
-        if ($newQuantity > 0 && $newQuantity < $availableQuantity) {
+        if ($newQuantity > 0 && $newQuantity <= $availableQuantity) {
             // Обновляем количество товара
-            $cartItem->quantity = $newQuantity;
-            $cartItem->save();
+            $existingCartItem->quantity = $newQuantity;
+            $existingCartItem->price = $product->price * $newQuantity;
+            $existingCartItem->save();
 
             // Возвращаем ответ с сообщением об успешном обновлении корзины
             return response()->json(['message' => 'Количество товара в корзине успешно обновлено'], 200);
@@ -95,8 +99,8 @@ class CartController extends Controller
 
         if ($existingCartItem) {
             // Если запись уже существует, обновляем количество товара
-            $existingCartItem->quantity += $quantity;
-            $existingCartItem->price += $product->price * $quantity;
+            $existingCartItem->quantity = $quantity;
+            $existingCartItem->price = $product->price * $quantity;
             $existingCartItem->save();
         } else {
             // Создание нового элемента корзины и связывание с пользователем

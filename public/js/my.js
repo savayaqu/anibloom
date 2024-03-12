@@ -302,6 +302,7 @@ let app = {
                 .then(response => response.json())
                 .then(data => {
                     this.cartItems = data.cart_items;
+                    console.log(data.cart_items);
                     // Обработка каждого элемента корзины
                     this.cartItems.forEach(cartItem => {
                         fetch(`/api/product/${cartItem.product_id}`)
@@ -309,6 +310,7 @@ let app = {
                             .then(productData => {
                                 // Добавляем данные о продукте в объект корзины
                                 cartItem.product = productData.data;
+
                             })
                             .catch(error => {
                                 console.error('Error fetching product:', error);
@@ -344,6 +346,7 @@ let app = {
                 .then(data => {
                     // Обработка успешного обновления количества товара в корзине
                     console.log('Количество товара в корзине успешно обновлено');
+                    this.loadCart();
                 })
                 .catch(error => {
                     console.error('Ошибка при обновлении количества товара в корзине:', error);
@@ -379,9 +382,6 @@ let app = {
                     console.error('Ошибка при удалении товара из корзины:', error);
                 });
         },
-
-
-
     }
 
 }
