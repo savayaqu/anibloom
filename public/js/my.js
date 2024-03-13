@@ -25,7 +25,8 @@ let app = {
             payments: [],
             payment_id: {},
             product: {},
-            ocp: [],
+            ocp: [], //массив с продуктами, заказами и compound
+            reviews: [],
 
         }
     },
@@ -39,10 +40,15 @@ let app = {
             }
             else if(link === 'profile')
             {
+                this.loadUserData();
                 this.loadOrder();
                 this.page = link;
             }
             else if (link === 'product')
+            {
+                this.page = link;
+            }
+            else if (link === 'updateProfile')
             {
                 this.page = link;
             }
@@ -62,9 +68,6 @@ let app = {
                   this.product = data.data;
                   this.linkpage('product');
               })
-              .catch(error => {
-                  console.error('Ошика:', error);
-              });
         },
         //Получение первых 3 товаров определенной категории
         getCategoriesAndProducts() {
@@ -84,14 +87,13 @@ let app = {
                                 // Добавляем только первые 3 продукта категории
                                 category.products = productsData.data.slice(0, 3);
                             })
-                            .catch(error => {
-                                console.error('Error fetching products:', error);
-                            });
+
                     });
                 })
                 .catch(error => {
-                    console.error('Error fetching categories:', error);
+                    alert('Произошла ошибка: ' + error.message);
                 });
+
         },
         //Загрузка всех товаров определенной категории
         loadCategoryProducts(categoryId, categoryName) {
@@ -104,7 +106,7 @@ let app = {
                     this.page = 'products';
                 })
                 .catch(error => {
-                    console.error('Error fetching category products:', error);
+                    alert('Произошла ошибка: ' + error.message);
                 });
         },
         // Добавляем метод для отправки формы авторизации
@@ -126,7 +128,9 @@ let app = {
                         // Получаем токен из ответа
                         return response.json();
                     } else {
-                        throw new Error('Ошибка аутентификации');
+                        return response.json().then(data => {
+                            throw new Error(data.message);
+                        });
                     }
                 })
                 .then(data => {
@@ -137,10 +141,35 @@ let app = {
                     window.location.href = '/';
                 })
                 .catch(error => {
-                    // Обработка ошибки
-                    console.error('Ошибка:', error);
+                    alert('Произошла ошибка: ' + error.message);
+                });
+
+        },
+        // Метод выхода
+        logout() {
+            fetch('/api/logout', {
+                method: 'GET',
+                headers: {
+                    'Authorization': 'Bearer ' + this.getCookie('api_token'),
+                },
+            })
+                .then(response => {
+                    if (response.ok) {
+                        // Удалить токен из куки
+                        document.cookie = "api_token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+                        this.linkpage('profile');
+                        window.location.reload();
+                    } else {
+                        return response.json().then(data => {
+                            throw new Error(data.message);
+                        });
+                    }
+                })
+                .catch(error => {
+                    alert('Произошла ошибка: ' + error.message);
                 });
         },
+
         //Получение куки
         getCookie(name) {
             const value = `; ${document.cookie}`;
@@ -181,15 +210,15 @@ let app = {
                         // Редирект на главную страницу
                         window.location.href = '/';
                     } else {
-                        // Отображаем сообщение об ошибке на странице
-                        response.json().then(data => {
-                            document.getElementById('error-message').innerText = data.error;
+                        return response.json().then(data => {
+                            throw new Error(data.message);
                         });
                     }
                 })
                 .catch(error => {
-                    console.error('Ошибка сети:', error);
+                    alert('Произошла ошибка: ' + error.message);
                 });
+
         },
         // Загрузка данных пользователя
         loadUserData() {
@@ -219,15 +248,12 @@ let app = {
                         this.user = data.data;
                     })
                     .catch(error => {
-                        console.error('Ошибка при загрузке данных пользователя:', error);
+                        alert('Произошла ошибка: ' + error.message);
                     });
-            } else {
-                console.error('Cookie с токеном отсутствует');
+
             }
         },
-        // Функция для обновления профиля пользователя
         updateProfile() {
-            // Получаем данные из полей формы
             const surname = document.getElementById('surnameP').value;
             const name = document.getElementById('nameP').value;
             const patronymic = document.getElementById('patronymicP').value;
@@ -237,7 +263,6 @@ let app = {
             const email = document.getElementById('emailP').value;
             const telephone = document.getElementById('telephoneP').value;
 
-            // Создаем объект с обновленными данными пользователя
             const updatedData = {
                 surname: surname,
                 name: name,
@@ -249,7 +274,6 @@ let app = {
                 telephone: telephone
             };
 
-            // Опции запроса
             const options = {
                 method: 'PATCH',
                 headers: {
@@ -263,7 +287,20 @@ let app = {
             fetch('/api/profile', options)
                 .then(response => {
                     if (!response.ok) {
-                        throw new Error('Ошибка при обновлении профиля');
+                        // Проверяем статус ответа сервера
+                        if (response.status === 422) {
+                            // Если статус 422 (Unprocessable Content), выводим сообщение с ошибками валидации
+                            return response.json().then(data => {
+                                let errorMessage = "Произошла ошибка при обновлении профиля:\n";
+                                for (const [key, value] of Object.entries(data.errors)) {
+                                    errorMessage += `${key}: ${value}\n`;
+                                }
+                                throw new Error(errorMessage);
+                            });
+                        } else {
+                            // В остальных случаях бросаем общее сообщение об ошибке
+                            throw new Error('Ошибка при обновлении профиля');
+                        }
                     }
                     return response.json();
                 })
@@ -273,8 +310,9 @@ let app = {
                     this.page = 'profile';
                 })
                 .catch(error => {
-                    console.error('Ошибка при обновлении профиля:', error);
+                    alert('Произошла ошибка: ' + error.message);
                 });
+
         },
         // Функция для добавления товара в корзину
         addToCart(productId) {
@@ -286,22 +324,21 @@ let app = {
                     'Authorization': 'Bearer ' + this.getCookie('api_token')
                 }
             };
-
             // Отправляем запрос на сервер
             fetch(`/api/product/${productId}`, options)
                 .then(response => {
                     if (!response.ok) {
-                    alert("Добавление товара в корзину доступно только авторизированным пользователям");
-                    }
+                        return response.json().then(data => {
+                            throw new Error(data.message);
+                        });                    }
                     return response.json();
                 })
                 .then(data => {
                     // Выводим сообщение об успешном добавлении товара в корзину
                     alert('Товар успешно добавлен в корзину');
-                    // Дополнительные действия, если необходимо
                 })
                 .catch(error => {
-                    console.error('Ошибка при добавлении товара в корзину:', error);
+                    alert('Произошла ошибка: ' + error.message);
                 });
         },
         //Загрузка корзины
@@ -326,13 +363,10 @@ let app = {
                                 cartItem.product = productData.data;
 
                             })
-                            .catch(error => {
-                                console.error('Error fetching product:', error);
-                            });
                     });
                 })
                 .catch(error => {
-                    console.error('Error fetching cart:', error);
+                    alert('Произошла ошибка: ' + error.message);
                 });
         },
         //Обновление количества товаров в корзине
@@ -360,12 +394,13 @@ let app = {
                 })
                 .then(data => {
                     // Обработка успешного обновления количества товара в корзине
-                    console.log('Количество товара в корзине успешно обновлено');
+                    alert('Количество товара в корзине успешно обновлено');
                     this.loadCart();
                 })
                 .catch(error => {
-                    console.error('Ошибка при обновлении количества товара в корзине:', error);
+                    alert('Произошла ошибка: ' + error.message);
                 });
+
         },
         //Узнаем текущее количество товара и выводим массивом чисел
         availableQuantities(item) {
@@ -396,7 +431,7 @@ let app = {
                     this.loadCart();
                 })
                 .catch(error => {
-                    console.error('Ошибка при удалении товара из корзины:', error);
+                    alert('Произошла ошибка: ' + error.message);
                 });
         },
         //Получение способов оплаты
@@ -408,6 +443,9 @@ let app = {
                 .then(data => {
                     this.payments = data.data;
                 })
+                .catch(error => {
+                    alert('Произошла ошибка: ' + error.message);
+                });
         },
         //Получение payment_id
         getPaymentId(payment_id) {
@@ -430,11 +468,18 @@ let app = {
                 }),
             })
                 .then(response => {
-                    alert("Заказ принят");
-                    this.loadCart();
+                    if (response.ok) {
+                        this.loadCart();
+                        alert("Заказ принят");
+                    } else {
+                        return response.json().then(data => {
+                            throw new Error(data.message);
+                        });
+                    }
+
                 })
                 .catch(error => {
-                    console.error('Ошибка: ', error);
+                    alert('Произошла ошибка: ' + error.message);
                 });
             //Сразу вывод заказа, чтобы не обновлять страницу
             this.loadOrder();
@@ -451,16 +496,64 @@ let app = {
                 .then(response => response.json())
                 .then(data => {
                     this.ocp = data;
-                    console.log(data);
-                })
-
-                .then(response => {
-
                 })
                 .catch(error => {
-                    console.error('Ошибка: ', error);
+                    alert('Произошла ошибка: ' + error.message);
                 });
         },
+        //оставление отзыва о товаре
+        addReview(productId) {
+            // Получаем данные из формы
+            let rating = document.getElementById('rating').value;
+            let textReview = document.getElementById('textReview').value;
+
+            // Отправляем запрос на сервер
+            // Отправляем запрос на сервер
+            fetch(`/api/product/${productId}/review`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + this.getCookie('api_token'),
+                },
+                body: JSON.stringify({
+                    textReview: textReview,
+                    rating: rating,
+                }),
+            })
+                .then(response => {
+                    if (response.ok) {
+                        window.location.reload();
+                        this.linkpage('product');
+                    } else {
+                        return response.json().then(data => {
+                            throw new Error(data.message);
+                        });
+                    }
+                })
+                .catch(error => {
+                    alert('Произошла ошибка: ' + error.message);
+                });
+        },
+        // Получение отзывов о товаре
+        getReviews(productId) {
+            // Отправляем запрос на сервер для получения отзывов
+            fetch(`/api/product/${productId}/review`)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Ошибка при получении отзывов');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    // Обработка полученных отзывов
+                    this.reviews = data;
+                })
+                .catch(error => {
+                    // Если произошла ошибка, устанавливаем reviews как пустой массив
+                    this.reviews = [];
+                });
+        },
+
     }
 
 }

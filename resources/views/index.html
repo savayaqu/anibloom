@@ -28,7 +28,8 @@
 <section class="p-2" v-if="page === 'profile'">
     <h2>Профиль пользователя</h2>
     <div v-if="getCookie('api_token')">
-        <b @click="linkpage('updateProfile')">Изменить пользовательные данные</b>
+        <b @click="linkpage('updateProfile')">Изменить пользовательские данные  </b>
+        <b @click="logout">Выйти из аккаунта</b>
         <p>Заказы: </p>
         <div v-for="item in ocp" :key="item.order.id" class="order">
             <p>Дата оформления заказа: {{ item.order.dateOrder }}</p>
@@ -41,7 +42,7 @@
                 <p>{{ item.products[index].name }}</p>
                 <p>Количество: {{ compound.quantity }}</p>
                 <p>Общая цена: {{ compound.total }} руб</p>
-                <button @click="getProduct(item.products[index].id)">Оставить отзыв</button>
+                <button @click="getProduct(item.products[index].id) & getReviews((item.products[index].id))">Оставить отзыв</button>
             </div>
         </div>
     </div>
@@ -150,7 +151,7 @@
             <div class="card-body" style="display: flex; justify-content: center; gap: 145px;">
                 <div v-for="product in category.products" :key="product.id"  style="width: 279px; border:ridge 10px #F2364A; height: 485px;">
                     <div style="margin: 11px; display: flex; flex-direction: column;">
-                        <div @click="getProduct(product.id)">
+                        <div @click="getProduct(product.id) & getReviews(product.id)">
                             <img style="width: 250px; height: 272px;" :src="'/storage/' + product.photo" alt="{{product.name}}">
                             <strong style="text-align: center; margin-top: 13px; color: #333333; height:25px; font-size: 16px; font-weight: 600;">{{ product.name }}</strong>
                         </div>
@@ -186,7 +187,7 @@
     </div>
     <div v-else>
         <div v-for="product in categoryProducts" :key="product.id">
-            <div>
+            <div @click="getProduct(product.id) & getReviews(product.id)">
                 <h3>{{ product.name }}</h3>
                 <img style="width: 250px; height: 272px;" :src="'/storage/' + product.photo" alt="{{product.name}}">
             </div>
@@ -207,6 +208,25 @@
     <button v-else style="margin: 0 auto; background: lightgray; border: white 2px solid; border-radius: 10px; width: 235px; height: 40px; color: white; font-size: 16px;" disabled>Нет в наличии</button>
     <br>
     <b style="text-align: center">Отзывы о товаре:</b>
+    <section>
+        <div v-for="review in reviews">
+            <p>Рейтинг: {{review.rating}}</p>
+            <p>Описание: {{review.textReview}}</p>
+        </div>
+
+
+
+        <form @submit.prevent="addReview(product.id)">
+            <label for="rating">Рейтинг:</label>
+            <input type="number" id="rating" min="1" max="5" required>
+            <br>
+            <label for="textReview">Описание:</label>
+            <textarea id="textReview" required></textarea>
+            <br>
+            <button type="submit">Добавить отзыв</button>
+        </form>
+        <p v-if="message">{{ message }}</p>
+    </section>
 </section>
 <footer style="height: 300px; padding-top: 100px">
     <div style="display: flex; justify-content: space-between">

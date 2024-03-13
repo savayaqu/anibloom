@@ -12,6 +12,20 @@ use Illuminate\Http\Request;
 
 class ReviewController extends Controller
 {
+    public function index($productId)
+    {
+        // Получаем отзывы для указанного товара
+        $reviews = Review::where('product_id', $productId)->get();
+
+        // Проверяем, найдены ли отзывы
+        if ($reviews->isEmpty()) {
+            // Если отзывы не найдены, возвращаем сообщение об ошибке
+            throw new ApiException(404, 'Отзывы не найдены для указанного товара');
+        }
+
+        // Возвращаем отзывы в формате JSON
+        return response()->json($reviews);
+    }
     public function store(ReviewCreateRequest $request, $productId)
     {
         // Получение текущего пользователя
@@ -53,52 +67,4 @@ class ReviewController extends Controller
         return response()->json(['message' => 'Отзыв успешно сохранен'], 200);
     }
 
-    public  function update(ReviewUpdateRequest $request, $productId)
-    {
-        // Получаем текущего пользователя
-        $user = auth()->user();
-
-        // Находим отзыв по id и проверяем, принадлежит ли он текущему пользователю
-        $review = Review::where('product_id', $productId)
-            ->where('user_id', $user->id)
-            ->first();
-
-        // Проверяем, найден ли отзыв и принадлежит ли он текущему пользователю
-        if (!$review) {
-            throw  new ApiException(404, 'Отзыв не найден или не принадлежит вам');
-        }
-
-        // Проверяем, чтобы пользователь не пытался изменить отзыв для другого товара
-        if ($review->product_id != $productId) {
-            throw  new ApiException(403, 'Отзыв принадлежит другому товару');
-        }
-
-        // Обновляем данные отзыва
-        $review->fill($request->only(['rating', 'textReview']));
-        $review->save();
-
-        // Возвращаем ответ с сообщением об успешном обновлении отзыва
-        return response()->json(['message' => 'Отзыв успешно обновлен'], 200);
-    }
-    public function delete(Request $request, $productId)
-    {
-        // Получаем текущего пользователя
-        $user = auth()->user();
-
-        // Находим отзыв, который хочет удалить пользователь
-        $review = Review::where('user_id', $user->id)
-            ->where('product_id', $productId)
-            ->first();
-
-        // Проверяем, был ли найден отзыв
-        if (!$review) {
-            throw  new ApiException(404, 'Отзыв не найден');
-        }
-
-        // Удаляем отзыв
-        $review->delete();
-
-        // Возвращаем сообщение об успешном удалении отзыва
-        return response()->json(['message' => 'Отзыв успешно удален'], 200);
-    }
 }

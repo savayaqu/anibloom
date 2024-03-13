@@ -34,7 +34,8 @@ Route::get('/category/{id}' , [ProductController::class, 'showMany']);
 Route::get('/product/{id}' , [ProductController::class, 'show']);
     //Просмотр способов оплаты
 Route::get('/payment', [OrderController::class, 'payment']);
-
+    //Просмотр отзывов у товара
+Route::get('/product/{id}/review', [ReviewController::class, 'index']);
 
 //Функционал авторизированного пользователя
     //Выход
@@ -47,17 +48,13 @@ Route::middleware('auth:api')->post('/product/{id}', [CartController::class, 'ad
 Route::middleware('auth:api')->get('/cart', [CartController::class, 'index']);
     //Оформление заказа
 Route::middleware('auth:api')->post('/checkout', [OrderController::class, 'checkout']);
-    //Оставление отзыва для определнного товара
+    //Оставление отзыва для определённого товара
 Route::middleware('auth:api')->post('/product/{id}/review', [ReviewController::class, 'store']);
     //Редактирование корзины
 Route::middleware('auth:api')->patch('/cart', [CartController::class, 'update']);
-    //Редактирование отзыва
-Route::middleware('auth:api')->patch('/product/{id}/review', [ReviewController::class, 'update']);
-    //Редактирование своего профиля
+   //Редактирование своего профиля
 Route::middleware('auth:api')->patch('/profile', [UserController::class, 'updateProfile']);
-    //Удаление отзыва
-Route::middleware('auth:api')->delete('/product/{id}/review', [ReviewController::class, 'delete']);
-    //Удаление товара из корзины
+   //Удаление товара из корзины
 Route::middleware('auth:api')->delete('/cart/product/{id}', [CartController::class, 'delete']);
     //Просмотр заказов
 Route::middleware('auth:api')->get('/orders', [OrderController::class, 'index']);
