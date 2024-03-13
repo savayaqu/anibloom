@@ -14,8 +14,11 @@ class ReviewController extends Controller
 {
     public function index($productId)
     {
-        // Получаем отзывы для указанного товара
-        $reviews = Review::where('product_id', $productId)->get();
+        // Получаем отзывы для указанного товара с данными пользователя
+        $reviews = Review::where('product_id', $productId)
+            ->with('user')
+            ->get();
+
 
         // Проверяем, найдены ли отзывы
         if ($reviews->isEmpty()) {

@@ -210,6 +210,7 @@
     <b style="text-align: center">Отзывы о товаре:</b>
     <section>
         <div v-for="review in reviews">
+            <p>Отзыв написан: {{review.user.name}}</p>
             <p>Рейтинг: {{review.rating}}</p>
             <p>Описание: {{review.textReview}}</p>
         </div>
