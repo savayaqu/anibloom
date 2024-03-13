@@ -24,8 +24,8 @@ let app = {
             totalPrice: {},
             payments: [],
             payment_id: {},
-            orders: [],
             product: {},
+            ocp: [],
 
         }
     },
@@ -442,7 +442,7 @@ let app = {
         //Просмотр заказов текущего пользователя
         loadOrder() {
             // Отправляем запрос на сервер
-            fetch('/api/orders', {
+            fetch('/api/compound', {
                 method: 'GET',
                 headers: {
                     'Authorization': 'Bearer ' + this.getCookie('api_token'),
@@ -450,11 +450,12 @@ let app = {
             })
                 .then(response => response.json())
                 .then(data => {
-                    this.orders = data.data;
-                    console.log(data.data);
+                    this.ocp = data;
+                    console.log(data);
                 })
+
                 .then(response => {
-                    this.loadCart();
+
                 })
                 .catch(error => {
                     console.error('Ошибка: ', error);

@@ -29,25 +29,32 @@
     <h2>Профиль пользователя</h2>
     <div v-if="getCookie('api_token')">
         <b @click="linkpage('updateProfile')">Изменить пользовательные данные</b>
-        <p>Текущие заказы: </p>
-        <div v-for="order in orders">
-            <p>Дата оформления заказа: {{order.dateOrder}}</p>
-            <p>Адрес доставки: {{order.address}}</p>
-            <p>Способ оплаты: {{order.payment_name}}</p>
-            <p>Статус заказа: {{order.status_name}}</p>
+        <p>Заказы: </p>
+        <div v-for="item in ocp" :key="item.order.id" class="order">
+            <p>Дата оформления заказа: {{ item.order.dateOrder }}</p>
+            <p>Адрес доставки: {{ item.order.address }}</p>
+            <p>Способ оплаты: {{item.paymentName}}</p>
+            <p>Статус заказа: {{item.statusName}}</p>
             <p>Товары:</p>
-            <div>
-
+            <div v-for="(compound, index) in item.compound" :key="index" class="product" style="display: flex; flex-direction: row; column-gap: 40px" >
+                <img :src="'/storage/' + item.products[index].photo" :alt="item.products[index].name" style="object-fit: cover; width: 100px; height: auto;">
+                <p>{{ item.products[index].name }}</p>
+                <p>Количество: {{ compound.quantity }}</p>
+                <p>Общая цена: {{ compound.total }} руб</p>
+                <button @click="getProduct(item.products[index].id)">Оставить отзыв</button>
             </div>
         </div>
     </div>
+
+
+
+
     <div v-if="!getCookie('api_token')">
         <h2>Авторизация</h2>
         <form class="form-control" @submit.prevent>
             <input class="form-control m-3 w-50" type="text" id="loginAuth" name="loginAuth" placeholder="Введи логин">
             <input class="form-control m-3 w-50" type="password" id="passwordAuth" name="passwordAuth" placeholder="Введи пароль">
             <button class="btn btn-dark m-3 w-50" @click="login">Вход</button>
-
             <button @click="linkpage('reg')" class="btn btn-dark m-3 w-50">Не загестрированы? Зарегистрируйтесь!</button>
         </form>
     </div>

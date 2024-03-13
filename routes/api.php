@@ -61,34 +61,24 @@ Route::middleware('auth:api')->delete('/product/{id}/review', [ReviewController:
 Route::middleware('auth:api')->delete('/cart/product/{id}', [CartController::class, 'delete']);
     //Просмотр заказов
 Route::middleware('auth:api')->get('/orders', [OrderController::class, 'index']);
+    //Просмотр купленных товаров
+Route::middleware('auth:api')->get('/compound', [UserController::class, 'compound']);
 
 //Функционал администратора
     //Создание категории
 Route::middleware('auth:api' , 'role:2')->post('/admin/category/create', [AdminController::class, 'createCategory']);
     //Добавление товара
 Route::middleware('auth:api' , 'role:2')->post('/admin/product/create', [AdminController::class, 'createProduct']);
-    //Просмотр всех пользователей
-Route::middleware('auth:api' , 'role:2')->get('/admin/users', [AdminController::class, 'allUsers']);
-    //Просмотр всех отзывов
-Route::middleware('auth:api' , 'role:2')->get('/admin/reviews', [AdminController::class, 'allReviews']);
-    //Просмотр всех заказов
-Route::middleware('auth:api' , 'role:2')->get('/admin/orders', [AdminController::class, 'allOrders']);
     //Редактирование категории
 Route::middleware('auth:api' , 'role:2')->patch('/admin/category/{id}/edit', [AdminController::class, 'updateCategory']);
     //Редактирование товара
 Route::middleware('auth:api' , 'role:2')->post('/admin/product/{id}/edit', [AdminController::class, 'updateProduct']);
     //Изменение статуса заказа
 Route::middleware('auth:api' , 'role:2')->patch('/admin/order/{id}/edit', [AdminController::class, 'updateOrder']);
-    //Редактирование отзыва
-Route::middleware('auth:api' , 'role:2')->patch('/admin/review/{id}/edit', [AdminController::class, 'updateReview']);
     //Удаление категории
 Route::middleware('auth:api' , 'role:2')->delete('/admin/category/{id}/delete', [AdminController::class, 'deleteCategory']);
     //Удаление товара
 Route::middleware('auth:api' , 'role:2')->delete('/admin/product/{id}/delete', [AdminController::class, 'deleteProduct']);
-    //Удаление пользователя
-Route::middleware('auth:api' , 'role:2')->delete('/admin/user/{id}/delete', [AdminController::class, 'deleteUser']);
-    //Удаление отзыва
-Route::middleware('auth:api' , 'role:2')->delete('/admin/review/{id}/delete', [AdminController::class, 'deleteReview']);
 
 
 
