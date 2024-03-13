@@ -170,11 +170,14 @@ let app = {
                 });
         },
 
-        //Получение куки
+        // Получение куки
         getCookie(name) {
             const value = `; ${document.cookie}`;
             const parts = value.split(`; ${name}=`);
-            if (parts.length === 2) return parts.pop().split(';').shift();
+            if (parts.length === 2) {
+                const token = parts.pop().split(';').shift();
+                return token;
+            }
         },
         //Регистрация
         register() {
@@ -244,12 +247,15 @@ let app = {
                         return response.json();
                     })
                     .then(data => {
-                        // Записываем данные пользователя в переменную user
-                        this.user = data.data;
+                        if (data.data.role_id === 2) {
+                            // Пользователь является администратором
+                            window.location.href = '/admin';
+                        } else {
+                            // Пользователь не является администратором
+                            // Записываем данные пользователя в переменную user
+                            this.user = data.data;
+                        }
                     })
-                    .catch(error => {
-                        alert('Произошла ошибка: ' + error.message);
-                    });
 
             }
         },
@@ -497,9 +503,6 @@ let app = {
                 .then(data => {
                     this.ocp = data;
                 })
-                .catch(error => {
-                    alert('Произошла ошибка: ' + error.message);
-                });
         },
         //оставление отзыва о товаре
         addReview(productId) {
