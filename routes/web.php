@@ -17,6 +17,4 @@ Route::get('/', function () {
     return view('index');
 });
 
-Route::middleware('auth:api' , 'role:2')->get('/admin', function () {
-    return view('admin');
-});
+

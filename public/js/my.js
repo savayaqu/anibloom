@@ -8,7 +8,8 @@ function formatDate(input) {
     // Устанавливаем новое значение в поле ввода
     input.value = formattedDate;
 }
-
+let AddCategory = false;
+let AddProduct = false;
 // Конфигурация приложения
 let app = {
     // Раздел с переменными
@@ -27,13 +28,19 @@ let app = {
             product: {},
             ocp: [], //массив с продуктами, заказами и compound
             reviews: [],
-
+            isAdmin: false,
+            AddCategory: false,
+            AddProduct: false,
         }
     },
     // Методы
     methods: {
         linkpage(link) {
-            if(link === 'cart')
+            if (link === 'admin')
+            {
+                this.page = link;
+            }
+            else if(link === 'cart')
             {
                 this.loadCart();
                 this.page = link;
@@ -86,6 +93,7 @@ let app = {
                             .then(productsData => {
                                 // Добавляем только первые 3 продукта категории
                                 category.products = productsData.data.slice(0, 3);
+                                category.items = productsData.data;
                             })
 
                     });
@@ -249,7 +257,8 @@ let app = {
                     .then(data => {
                         if (data.data.role_id === 2) {
                             // Пользователь является администратором
-                            window.location.href = '/admin';
+                            //this.linkpage('admin');
+                            this.isAdmin = true;
                         } else {
                             // Пользователь не является администратором
                             // Записываем данные пользователя в переменную user
@@ -556,6 +565,106 @@ let app = {
                     this.reviews = [];
                 });
         },
+        //Добавление категории
+        createCategory() {
+            const categoryName = document.getElementById('CatName').value; // Получаем название категории из поля ввода
+            fetch('/api/admin/category/create', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + this.getCookie('api_token')
+                },
+                body: JSON.stringify({
+                    name: categoryName
+                })
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Ошибка при создании категории');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    // После успешного создания категории обновляем данные на фронтенде
+                    this.categories.push(data);
+                    this.AddCategory = false; // Скрываем форму добавления категории
+                    alert('Категория успешно добавлена');
+                    this.getCategoriesAndProducts(); // Обновляем категории и товары
+                })
+                .catch(error => {
+                    alert('Произошла ошибка: ' + error.message);
+                });
+        },
+        // Редактирование категории
+        editCategory(category) {
+            const newName = category.name; // Получаем новое название категории
+            fetch(`/api/admin/category/${category.id}/edit`, {
+                method: 'PATCH',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + this.getCookie('api_token')
+                },
+                body: JSON.stringify({
+                    name: newName
+                })
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Ошибка при редактировании категории');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    // После успешного редактирования категории обновляем данные на фронтенде
+                    category.name = data.name;
+                    alert('Категория успешно отредактирована');
+                    this.getCategoriesAndProducts(); // Обновляем категории и товары
+                })
+                .catch(error => {
+                    alert('Произошла ошибка: ' + error.message);
+                });
+        },
+        // Удаление категории
+        deleteCategory(category) {
+            fetch(`/api/admin/category/${category.id}/delete`, {
+                method: 'DELETE',
+                headers: {
+                    'Authorization': 'Bearer ' + this.getCookie('api_token')
+                }
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Ошибка при удалении категории');
+                    }
+                    alert('Категория успешно удалена');
+                    this.getCategoriesAndProducts(); // Обновляем категории и товары
+                })
+                .catch(error => {
+                    alert('Произошла ошибка: ' + error.message);
+                });
+        },
+        // Удаление товара
+        deleteProduct(item) {
+            fetch(`/api/admin/product/${item.id}/delete`, {
+                method: 'DELETE',
+                headers: {
+                    'Authorization': 'Bearer ' + this.getCookie('api_token')
+                }
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Ошибка при удалении товара');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    alert('Товар успешно удален');
+                    this.getCategoriesAndProducts();
+                })
+                .catch(error => {
+                    alert('Произошла ошибка: ' + error.message);
+                });
+        }
 
     }
 
