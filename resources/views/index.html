@@ -77,14 +77,19 @@
             </thead>
             <tbody v-for="category in categories" :key="category.id">
             <tr v-for="item in category.items">
-                <td>{{ item.name }}</td>
-                <td>{{ item.description }}</td>
-                <td>{{ item.price }}</td>
-                <td>{{ item.quantity }}</td>
+                <td><input :value="item.name" id="eName"></td>
+                <td><textarea :value="item.description" id="eDesc"></textarea> </td>
+                <td><input :value="item.price" id="ePrice"></td>
+                <td><input :value="item.quantity" id="eQuan"></td>
                 <td>
-                    <img style="width: 250px; height: 272px;" :src="'/storage/' + item.photo" :alt="item.name">
+                    <img style="width: 250px; height: 272px;" :src="'/storage/' + item.photo" alt="{{item.name}}">
+                    <input type="file" id="eFile">
                 </td>
-                <td>{{ category.name }}</td>
+                <td>
+                    <select class="form-control m-3 w-50"  required>
+                        <option v-for="category in categories" :value="category.id" id="eCat">{{ category.name }}</option>
+                    </select>
+                </td>
                 <td>
                     <button class="btn btn-primary m-3 w-50" @click="editProduct(item)">Редактировать</button>
                     <button class="btn btn-danger m-3 w-50" @click="deleteProduct(item)">Удалить</button>
@@ -96,7 +101,6 @@
             </tbody>
         </table>
     </div>
-
     <div v-if="AddProduct === true">
         <!-- Форма добавления товара -->
         <form class="form-control" @submit.prevent>

@@ -664,18 +664,10 @@ let app = {
             const productQuan = document.getElementById('PrQuan').value.trim();
             const categoryId = document.getElementById('PrCategoryId').value;
 
-            if (productName !== '') {
-                formData.append('name', productName);
-            }
-            if (productDesc !== '') {
-                formData.append('description', productDesc);
-            }
-            if (productPrice !== '') {
-                formData.append('price', productPrice);
-            }
-            if (productQuan !== '') {
-                formData.append('quantity', productQuan);
-            }
+            formData.append('name', productName);
+            formData.append('description', productDesc);
+            formData.append('price', productPrice);
+            formData.append('quantity', productQuan);
             formData.append('category_id', categoryId);
 
             const photoFile = document.getElementById('PrPhoto').files[0];
@@ -703,7 +695,64 @@ let app = {
                 .catch(error => {
                     alert('Произошла ошибка: ' + error.message);
                 });
-        }
+        },
+
+
+
+
+
+
+        // Метод для добавления нового товара
+        editProduct(item) {
+            const formData = new FormData();
+            const eName = document.getElementById('eName').value;
+            const eDesc = document.getElementById('eDesc').value;
+            const ePrice = document.getElementById('ePrice').value;
+            const eQuan = document.getElementById('eQuan').value;
+            const eCat = document.getElementById('eCat').value;
+
+            if (eName !== item.name) {
+                formData.append('name', eName);
+            }
+            if (eDesc !== item.description) {
+                formData.append('description', eDesc);
+            }
+            if (ePrice !== item.price) {
+                formData.append('price', ePrice);
+            }
+            if (eQuan !== item.quantity) {
+                formData.append('quantity', eQuan);
+            }
+            formData.append('category_id', eCat);
+
+            const eFile = document.getElementById('eFile').files[0];
+            if (eFile) {
+                formData.append('photo', eFile);
+            }
+
+            fetch(`/api/admin/product/${item.id}/edit`, {
+                method: 'POST',
+                headers: {
+                    'Authorization': 'Bearer ' + this.getCookie('api_token')
+                },
+                body: formData
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Ошибка при изменении товара');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    alert('Товар успешно изменен');
+                    this.getCategoriesAndProducts(); // Обновляем категории и товары
+                })
+                .catch(error => {
+                    alert('Произошла ошибка: ' + error.message);
+                });
+        },
+
+
 
     }
     }
