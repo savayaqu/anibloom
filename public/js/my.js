@@ -31,6 +31,9 @@ let app = {
             isAdmin: false,
             AddCategory: false,
             AddProduct: false,
+            searchTerm: '',
+            foundProducts: [],
+
         }
     },
     // Методы
@@ -54,6 +57,30 @@ let app = {
             }
 
         },
+        //Поиск
+        searchProducts: function() {
+            // Очищаем список найденных товаров перед выполнением нового поиска
+            this.searchResults = [];
+
+            // Проверяем, есть ли введенный поисковый запрос
+            if (this.searchTerm.trim() !== '') {
+                // Проходим по всем товарам и ищем те, у которых название или описание содержат введенный поисковый запрос
+                for (let i = 0; i < this.products.length; i++) {
+                    let product = this.products[i];
+                    // Проверяем, что значения name и description существуют и не равны null
+                    if (product.name && product.description) {
+                        let searchTermLower = this.searchTerm.toLowerCase();
+                        let productNameLower = product.name.toLowerCase();
+                        let productDescriptionLower = product.description.toLowerCase();
+                        if (productNameLower.includes(searchTermLower) || productDescriptionLower.includes(searchTermLower)) {
+                            this.searchResults.push(product);
+                        }
+                    }
+                }
+            }
+        },
+
+
         //Просмотр конкретного товара
         getProduct(product_id) {
             fetch(`/api/product/${product_id}`, {
@@ -83,6 +110,7 @@ let app = {
                                 // Добавляем только первые 3 продукта категории
                                 category.products = productsData.data.slice(0, 3);
                                 category.items = productsData.data;
+                                this.products = productsData.data;
                             })
 
                     });

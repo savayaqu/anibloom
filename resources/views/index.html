@@ -17,7 +17,15 @@
 <header>
     <nav class="nav" style="display: flex;align-items: center; gap: 30px">
         <p class="li" @click="linkpage('main')"><img src="/public/images/logo.png" style="width: 120px; height: 120px;" alt="Логотип"></p>
-        <input style="background: #F7F7F7;border-radius: 10px; border: black; color: #808080; width: 750px; height: 50px;" placeholder="Поиск" >
+        <div>
+            <input v-model="searchTerm" @input="searchProducts" placeholder="Поиск" style="background: #F7F7F7;border-radius: 10px; border: black; color: #808080; width: 750px; height: 50px;">
+            <ul>
+                <li v-for="product in searchResults" :key="product.id">
+                    <a @click="getProduct(product.id)">{{ product.name }}</a>
+                </li>
+            </ul>
+        </div>
+
         <p class="li" @click="linkpage('profile')"><img src="/public/images/user.png" alt="profile" style="height: 30px; width: 30px"></p>
         <p class="li" @click="linkpage('cart')"><img src="/public/images/cart.png" alt="cart" style="height: 30px; width: 30px"></p>
         <p v-if="isAdmin === true" class="li" @click="linkpage('admin')">Админ панель</p>
