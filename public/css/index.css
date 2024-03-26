@@ -1,3 +1,23 @@
+@font-face {
+    font-family: 'AnimeAce';
+    src: url(/public/css/fonts/AnimeAce.ttf);
+}
+@font-face {
+    font-family: 'AnimeAceV3';
+    src: url(/public/css/fonts/AnimeAcev3.ttf);
+}
+@font-face {
+    font-family: 'AnimeAceBold';
+    src: url(/public/css/fonts/animeace2_bld.otf);
+}
+@font-face {
+    font-family: 'AnimeAceItalic';
+    src: url(/public/css/fonts/animeace2_ital.otf);
+}
+@font-face {
+    font-family: 'AnimeAceReg';
+    src: url(/public/css/fonts/animeace2_reg.otf);
+}
 .end {
     font-size: 16px;
     font-weight: 400;
@@ -12,9 +32,10 @@
     color: grey;
 }
 .category {
-    border-bottom: 3px solid grey;
-    background-color: rgba(0, 0, 0, 0.1);
+    box-shadow: 0 5px 15px black;
     border-radius: 10px;
+    background: #AE445A;
+    color: white;
 }
 .city {
     padding-left: 25px;
@@ -27,6 +48,7 @@
 }
 .li {
     text-decoration: none;
+    cursor: pointer;
     color: #F2364A;
     font-size: 16px;
 }
@@ -40,11 +62,13 @@
     text-decoration: none;
     display: flex;
     justify-content: center;
-    border-radius: 10px;
     text-align: center;
     font-weight: 400;
-    border: 1px solid white;
 }
 .category2:hover {
     color: grey;
 }
+* {
+    font-family: AnimeAceV3;
+}
+
