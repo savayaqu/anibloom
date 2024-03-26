@@ -77,21 +77,16 @@
             </thead>
             <tbody v-for="category in categories" :key="category.id">
             <tr v-for="item in category.items">
-                <td><input v-model="item.name"></td>
-                <td><input v-model="item.description"></td>
-                <td><input v-model="item.price"></td>
-                <td><input v-model="item.quantity"></td>
+                <td>{{ item.name }}</td>
+                <td>{{ item.description }}</td>
+                <td>{{ item.price }}</td>
+                <td>{{ item.quantity }}</td>
                 <td>
-                    <img style="width: 250px; height: 272px;" :src="'/storage/' + item.photo" alt="{{item.name}}">
-                    <input type="file">
+                    <img style="width: 250px; height: 272px;" :src="'/storage/' + item.photo" :alt="item.name">
                 </td>
+                <td>{{ category.name }}</td>
                 <td>
-                    <select class="form-control m-3 w-50"  required>
-                        <option v-for="category in categories" :value="category.id">{{ category.name }}</option>
-                    </select>
-                </td>
-                <td>
-                    <button class="btn btn-primary m-3 w-50" @click="editProduct(item, category.id)">Редактировать</button>
+                    <button class="btn btn-primary m-3 w-50" @click="editProduct(item)">Редактировать</button>
                     <button class="btn btn-danger m-3 w-50" @click="deleteProduct(item)">Удалить</button>
                 </td>
                 <td>
@@ -101,14 +96,15 @@
             </tbody>
         </table>
     </div>
+
     <div v-if="AddProduct === true">
         <!-- Форма добавления товара -->
         <form class="form-control" @submit.prevent>
             <input class="form-control m-3 w-50" required id="PrName" name="PrName" type="text" placeholder="Введи название товара">
-            <input class="form-control m-3 w-50"  id="PrDesc" name="name" type="text" placeholder="Введи описание товара">
-            <input class="form-control m-3 w-50" required id="PrPrice" name="name" type="text" placeholder="Введи цену товара">
-            <input class="form-control m-3 w-50" required id="PrQuan" name="name" type="text" placeholder="Введи количество товара">
-            <input class="form-control m-3 w-50"  id="PrPhoto" name="name" type="file" placeholder="Фото">
+            <input class="form-control m-3 w-50"  id="PrDesc" name="PrDesc" type="text" placeholder="Введи описание товара">
+            <input class="form-control m-3 w-50" required id="PrPrice" name="PrPrice" type="text" placeholder="Введи цену товара">
+            <input class="form-control m-3 w-50" required id="PrQuan" name="PrQuan" type="text" placeholder="Введи количество товара">
+            <input class="form-control m-3 w-50"  id="PrPhoto" name="PrPhoto" type="file" placeholder="Фото">
             <select class="form-control m-3 w-50" id="PrCategoryId" required>
                 <option v-for="category in categories" :value="category.id">{{ category.name }}</option>
             </select>

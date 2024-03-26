@@ -71,6 +71,10 @@ class AdminController extends Controller
             if ($fileName) {
                 // Файл успешно сохранен, продолжаем сохранение продукта с указанием имени файла
                 $product->photo = $filePathToPlace; // Сохраняем путь до файла
+
+                Storage::putFileAs('public/' . $filePath, $file, $fileName);
+
+
                 $product->save();
 
                 return response()->json(['message' => 'Продукт успешно создан'], 201);
@@ -149,6 +153,9 @@ class AdminController extends Controller
             //удаление файла на сервере
             if($product->photo != NULL)Storage::delete($product->photo);
             // Сохраняем файл на сервере
+            Storage::putFileAs('public/' . $filePath, $file, $fileName);
+
+
             $filePathToPlace = $file->storeAs($filePath, $fileName);
             $product->photo = $filePathToPlace; // Сохраняем путь до файла
         }

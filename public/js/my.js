@@ -36,45 +36,34 @@ let app = {
     // Методы
     methods: {
         linkpage(link) {
-            if (link === 'admin')
-            {
+            if (link === 'admin') {
                 this.page = link;
-            }
-            else if(link === 'cart')
-            {
+            } else if (link === 'cart') {
                 this.loadCart();
                 this.page = link;
-            }
-            else if(link === 'profile')
-            {
+            } else if (link === 'profile') {
                 this.loadUserData();
                 this.loadOrder();
                 this.page = link;
-            }
-            else if (link === 'product')
-            {
+            } else if (link === 'product') {
                 this.page = link;
-            }
-            else if (link === 'updateProfile')
-            {
+            } else if (link === 'updateProfile') {
                 this.page = link;
-            }
-            else
-            {
+            } else {
                 this.page = 'main';
             }
 
         },
         //Просмотр конкретного товара
         getProduct(product_id) {
-          fetch(`/api/product/${product_id}`, {
-              method: 'GET',
-          })
-              .then(response => response.json())
-              .then(data => {
-                  this.product = data.data;
-                  this.linkpage('product');
-              })
+            fetch(`/api/product/${product_id}`, {
+                method: 'GET',
+            })
+                .then(response => response.json())
+                .then(data => {
+                    this.product = data.data;
+                    this.linkpage('product');
+                })
         },
         //Получение первых 3 товаров определенной категории
         getCategoriesAndProducts() {
@@ -129,7 +118,7 @@ let app = {
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ login: login, password: password }),
+                body: JSON.stringify({login: login, password: password}),
             })
                 .then(response => {
                     if (response.ok) {
@@ -345,7 +334,8 @@ let app = {
                     if (!response.ok) {
                         return response.json().then(data => {
                             throw new Error(data.message);
-                        });                    }
+                        });
+                    }
                     return response.json();
                 })
                 .then(data => {
@@ -424,7 +414,7 @@ let app = {
                 // Получаем количество товара из объекта товара
                 const productQuantity = item.product.quantity;
                 // Создаем массив чисел от 1 до доступного количества товара
-                return Array.from({ length: productQuantity }, (_, index) => index + 1);
+                return Array.from({length: productQuantity}, (_, index) => index + 1);
             } else {
                 return [];
             }
@@ -464,7 +454,7 @@ let app = {
         },
         //Получение payment_id
         getPaymentId(payment_id) {
-          this.payment_id = payment_id;
+            this.payment_id = payment_id;
         },
         //Оформление заказа
         checkout() {
@@ -664,11 +654,59 @@ let app = {
                 .catch(error => {
                     alert('Произошла ошибка: ' + error.message);
                 });
+        },
+        // Метод для добавления нового товара
+        createProduct() {
+            const formData = new FormData();
+            const productName = document.getElementById('PrName').value.trim();
+            const productDesc = document.getElementById('PrDesc').value.trim();
+            const productPrice = document.getElementById('PrPrice').value.trim();
+            const productQuan = document.getElementById('PrQuan').value.trim();
+            const categoryId = document.getElementById('PrCategoryId').value;
+
+            if (productName !== '') {
+                formData.append('name', productName);
+            }
+            if (productDesc !== '') {
+                formData.append('description', productDesc);
+            }
+            if (productPrice !== '') {
+                formData.append('price', productPrice);
+            }
+            if (productQuan !== '') {
+                formData.append('quantity', productQuan);
+            }
+            formData.append('category_id', categoryId);
+
+            const photoFile = document.getElementById('PrPhoto').files[0];
+            if (photoFile) {
+                formData.append('photo', photoFile);
+            }
+
+            fetch('/api/admin/product/create', {
+                method: 'POST',
+                headers: {
+                    'Authorization': 'Bearer ' + this.getCookie('api_token')
+                },
+                body: formData
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Ошибка при добавлении товара');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    alert('Товар успешно добавлен');
+                    this.getCategoriesAndProducts(); // Обновляем категории и товары
+                })
+                .catch(error => {
+                    alert('Произошла ошибка: ' + error.message);
+                });
         }
 
     }
-
-}
+    }
 let VueApp = Vue.createApp(app).mount('#app');
 VueApp.loadUserData();
 VueApp.getCategoriesAndProducts();
