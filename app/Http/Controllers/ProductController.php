@@ -18,6 +18,16 @@ class ProductController extends Controller
             'data' => $products
         ]);
     }
+    public function index() {
+        $products = Product::all();
+        if($products->isEmpty()) {
+            throw new ApiException(404, 'Товары не найдены');
+        } else {
+            return response([
+                'data' => $products,
+            ]);
+        }
+    }
 
     public function show(int $id) {
         $product = Product::where('id', $id)->first();

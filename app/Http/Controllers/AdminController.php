@@ -116,7 +116,11 @@ class AdminController extends Controller
         ]);
     }
     public function updateCategory(CategoryUpdateRequest $request, $id)
-    {
+    { // Проверяем, есть ли категория с таким именем уже в базе данных
+        $existingCategory = Category::where('name', $request->input('name'))->first();
+        if ($existingCategory) {
+            throw new ApiException(422, 'Категория с таким именем уже существует');
+        }
         //Проверка существования
         $category = Category::find($id);
         if (!$category) {

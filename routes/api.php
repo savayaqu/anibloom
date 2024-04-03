@@ -32,6 +32,8 @@ Route::get('/categories' , [CategoryController::class, 'index']);
 Route::get('/category/{id}' , [ProductController::class, 'showMany']);
     //Просмотр конкретного товара
 Route::get('/product/{id}' , [ProductController::class, 'show']);
+    //Просмотр всех товаров
+Route::get('/products', [ProductController::class, 'index']);
     //Просмотр способов оплаты
 Route::get('/payment', [OrderController::class, 'payment']);
     //Просмотр отзывов у товара
