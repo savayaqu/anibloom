@@ -75,6 +75,14 @@ class CartController extends Controller
 
 
     public function addToCart(Request $request, $id) {
+        // Получение текущего пользователя
+        $user = auth()->user();
+
+        // Проверка существует ли пользователь
+        if (!$user) {
+            return response()->json(['error' => 'Пользователь не авторизирован'], 401);
+        }
+
         $product = Product::find($id);
         // Проверка на существование товара
         if(!$product) {
@@ -97,13 +105,7 @@ class CartController extends Controller
             return response()->json(['error' => 'Недостаточное количество товара в наличии'], 400);
         }
 
-        // Получение текущего пользователя
-        $user = auth()->user();
 
-        // Проверка существует ли пользователь
-        if (!$user) {
-            return response()->json(['error' => 'Пользователь не авторизирован'], 401);
-        }
 
         // Проверяем, существует ли уже запись для этого товара в корзине пользователя
         $existingCartItem = $user->cart()->where('product_id', $product->id)->first();
